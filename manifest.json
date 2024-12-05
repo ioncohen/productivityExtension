@@ -1,0 +1,10 @@
+{
+    "manifest_version": 3,
+    "name": "Productivity Enforcer",
+    "description": "Stop wasting time on distracting sites",
+    "version": "1.0",
+    "action": {
+      "default_popup": "popMenu.html",
+      "default_icon": "PEIcon.png"
+    }
+  }
