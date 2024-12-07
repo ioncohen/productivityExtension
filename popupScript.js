@@ -40,16 +40,21 @@ document.getElementById('startSessionButton').addEventListener('click', () => {
         //TODO:display little red error message for the user.
     }
 });
-document.getElementById('overrideButton').addEventListener('click', () => {
+document.getElementById('sessionEndReturn').addEventListener('click', () => {
     document.getElementById('activeSession').style.display = 'none';
     document.getElementById('popupMain').style.display = 'block';
     localStorage.setItem('sessionActive', 'false');
+    document.getElementById('hiddenMessage').style.opacity = '0';
+    document.getElementById('hiddenMessage').style.pointerEvents = 'none';
 });
+
+
 //save settings when save button is pressed
 document.getElementById('saveSettingsButton').addEventListener('click', () => {
     saveSettings();
 });
 
+let timerInterval;
 //remember if there is an active session in progress
 if(localStorage.getItem('sessionActive') === 'true'){
     console.log("session Persist!!!");
@@ -58,8 +63,15 @@ if(localStorage.getItem('sessionActive') === 'true'){
     startClock();
 }
 
+const exitButtons = document.querySelectorAll('.exitButton');
+// Loop through all elements and add an event listener
+exitButtons.forEach((element) => {
+  element.addEventListener('click', () => {
+    localStorage.setItem('sessionActive', 'false');
+    window.close();
+  });
+});
 
-let timerInterval;
 //Update Timer during activeSession
 // Example target date (you can replace this with your saved target date)
 // Function to update the countdown
@@ -74,8 +86,8 @@ function updateCountdown() {
     if (remainingTime <= 0) {
         console.log("The countdown has ended!");
         clearInterval(timerInterval);  // Stop the timer
-        //TODO: also display some stuff/animations for the user?
-        //wait what is the point of this, they cant work on anything while the tab is open. So this is just to check your progress for a moment i guess.
+        document.getElementById('hiddenMessage').style.opacity = '1';
+        document.getElementById('hiddenMessage').style.pointerEvents = 'auto';
         return;
     }
 
@@ -120,7 +132,7 @@ function startClock() {
     }, msToDelay);
 }
 
-// Start the countdown
+// Start the countdown on popup restart if the session is still active
 if (localStorage.getItem('activeSession') === 'true')
     startClock();
 

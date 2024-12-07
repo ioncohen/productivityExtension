@@ -7,11 +7,11 @@
   <body>
     <div id="popupMain">
       <h1>Lock In</h1>
-      <div><i id="note">Productivity tool for chromium browsers</i></div>
+      <div><i class="note">Productivity tool for chromium browsers</i></div>
       <br>
       <button id="goToSettingsButton">Edit Settings</button>
 
-      <p id="smallHeader">Start a Session</p>
+      <p class="smallHeader">Start a Session</p>
           <input type="text" id="sessionLengthInput" placeholder="Minutes of focus">
           <button>Enter</button>
           <br>
@@ -20,17 +20,17 @@
 
     <div id="popupSettings">
         <h1>Edit Settings</h1>
-      <p id="smallerHeader" style="margin-top: 5px;"><strong>Edit passphrase:</strong></p>
-      <div><i id="note">You will have to type this out to override the blocker. Up to 500 characters.</i></div>
+      <p class="smallerHeader" style="margin-top: 5px;"><strong>Edit passphrase:</strong></p>
+      <div><i class="note">You will have to type this out to override the blocker. Up to 500 characters.</i></div>
       <textarea type="text" id="passInput" placeholder="Type here" wrap="soft"></textarea>
 
-      <p id="smallerHeader"><strong>Edit block list:</strong></p>
-      <div><i id="note">Enter text on each line. Any url containing this text will be blocked</i></div>
+      <p class="smallerHeader"><strong>Edit block list:</strong></p>
+      <div><i class="note">Enter text on each line. Any url containing this text will be blocked</i></div>
       <textarea type="text" id="blockList" placeholder="Up to 100 lines"></textarea>
-      <div><i id="note">Add a "-" before a line to make an exception</i></div>
+      <div><i class="note">Add a "-" before a line to make an exception</i></div>
 
 
-      <p id="smallHeader"><strong>Extra Settings</strong></p>
+      <p class="smallHeader"><strong>Extra Settings</strong></p>
       <form>
           <input type="checkbox" id="setting1" name="setting1" value="ShortsEnable">
           <label for="setting1"> Enable Youtube Shorts Redirect (automatically views shorts as normal videos)</label><br>
@@ -48,12 +48,17 @@
     <div id="activeSession">
       <h1>Active Session</h1> 
       <button id="timerDisplay">00:00:00</button>
+      
+      <div id="hiddenMessage">
+        <div>Session Complete</div>
+        <div style="margin-bottom: 10px"><button id="sessionEndReturn">Return</button><button class="exitButton">Exit</button></div>
+      </div>
       <!--put dots like baseball to represent next big break-->
       <button id="overrideButton">Override Lock-In session</button>
       <!--maybe clicking the clock should pause it-->
       <button id="pauseButton">Pause Lock-In session</button>
       <button id="blockThisSite">Add current site to block list</button>
-
+      
 
 
     </div>
