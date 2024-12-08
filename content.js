@@ -15,6 +15,17 @@ const overlay = document.createElement('div');
   overlay.style.alignItems = 'center';
   overlay.style.zIndex = '9999';
 
+  //create the passphrase typing target:
+  const passphraseReminder = document.createElement('p');
+  passphraseReminder.style.fontFamily = 'Arial, Helvetica, sans-serif';
+  passphraseReminder.style.color = 'black';
+  chrome.storage.local.get("passPhrase", function(value){
+    console.log(value.passPhrase);
+    if (value){
+      passphraseReminder.innerText = value.passPhrase + "test!!!";
+    }
+  });
+
   // Create the passphrase input box
   const passphraseBox = document.createElement('div');
   passphraseBox.id = 'lockInExtensionPassphraseBox';
@@ -34,13 +45,31 @@ const overlay = document.createElement('div');
 
 
   const inputField = document.createElement('input');
-  inputField.type = 'password';
-  inputField.id = 'passphraseInput';
+  inputField.type = 'text';
+  inputField.id = 'lockInExtensionPassphraseInput';
   inputField.placeholder = 'Enter passphrase';
-  
+
   passphraseBox.appendChild(heading);
+  passphraseBox.appendChild(passphraseReminder);
   passphraseBox.appendChild(inputField);
   overlay.appendChild(passphraseBox);
 
   // Add the overlay to the page
   document.body.appendChild(overlay);
+
+
+
+  inputField.addEventListener('input', () => {
+    console.log("receiving input!!");
+    if (inputField.value === passphraseReminder.innerText){
+      inputField.value = '';
+      unblockPage();
+      alert("unblocking page!");
+  }
+  });
+
+  function unblockPage(){
+    overlay.style.setProperty('display', 'none', 'important');
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+    //change this later to ask how long
+  }

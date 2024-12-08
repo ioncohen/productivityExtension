@@ -1,9 +1,11 @@
 function saveSettings(){
     const passText = document.getElementById('passInput').value
     localStorage.setItem('passPhrase', passText);
+    chrome.storage.local.set({'passPhrase': passText});
 
     const blockList = document.getElementById('blockList').value
     localStorage.setItem('blockList', blockList);
+    chrome.storage.local.set({'blockList': blockList});
 }
 
 function returnFromSession(){
@@ -45,7 +47,7 @@ document.getElementById('startSessionButton').addEventListener('click', () => {
         startClock();
     } else {
         console.log("ERROR: Not a valid number");
-        //TODO:display little red error message for the user.
+        //TODO: display little red error message for the user.
     }
 });
 document.getElementById('sessionEndReturn').addEventListener('click', () => {

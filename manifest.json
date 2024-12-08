@@ -7,7 +7,7 @@
       "default_popup": "popMenu.html",
       "default_icon": "PEIcon.png"
     },
-    "permissions": ["activeTab"],
+    "permissions": ["activeTab", "storage"],
     "content_scripts": [
       {
         "js": ["content.js"],
