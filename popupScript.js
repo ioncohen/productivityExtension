@@ -6,6 +6,14 @@ function saveSettings(){
     localStorage.setItem('blockList', blockList);
 }
 
+function returnFromSession(){
+    document.getElementById('typePassphrase').style.display = 'none';
+    document.getElementById('activeSession').style.display = 'none';
+    document.getElementById('popupMain').style.display = 'block';
+    localStorage.setItem('sessionActive', 'false');
+    document.getElementById('hiddenMessage').style.opacity = '0';
+    document.getElementById('hiddenMessage').style.pointerEvents = 'none';
+}
 
 //Set up event listeners for page navigation buttons
 document.getElementById('goToSettingsButton').addEventListener('click', () => {
@@ -41,13 +49,8 @@ document.getElementById('startSessionButton').addEventListener('click', () => {
     }
 });
 document.getElementById('sessionEndReturn').addEventListener('click', () => {
-    document.getElementById('activeSession').style.display = 'none';
-    document.getElementById('popupMain').style.display = 'block';
-    localStorage.setItem('sessionActive', 'false');
-    document.getElementById('hiddenMessage').style.opacity = '0';
-    document.getElementById('hiddenMessage').style.pointerEvents = 'none';
+    returnFromSession();
 });
-
 
 //save settings when save button is pressed
 document.getElementById('saveSettingsButton').addEventListener('click', () => {
@@ -98,7 +101,7 @@ function updateCountdown() {
 
     // Display the countdown in the format: HH:MM:SS
     const countdownDisplay = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
-    console.log(countdownDisplay);  // You can update this line to show it in your HTML
+    //console.log(countdownDisplay);  //<---for debugging purposes
 
     // Optional: Update an HTML element instead of logging to the console
     document.getElementById('timerDisplay').innerText = countdownDisplay;
@@ -136,8 +139,57 @@ function startClock() {
 if (localStorage.getItem('activeSession') === 'true')
     startClock();
 
+//add current page to block list
+document.getElementById('blockThisSite').addEventListener('click', () => {
+    
+    (async () => {
+        // get last focused window from chrome
+        const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
+        const match = tab.url.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
+        console.log(tab.url);
+        console.log(match);
+        if (match){
+            localStorage.setItem('blockList', match[1] + '\n' + localStorage.getItem('blockList'));
+        } else {
+            alert("Can't block this site, sorry");
+        }
+      })();
+});
 
+document.getElementById('overrideButton').addEventListener('click', () => {
+    document.getElementById('activeSession').style.display = 'none';
+    document.getElementById('typePassphrase').style.display = 'block';
+    
+    document.getElementById('targetPassphrase').innerText = localStorage.getItem('passPhrase');
+});
 
+let targetPassphrase = localStorage.getItem('passPhrase');
+document.getElementById('cancelOverride').addEventListener('click', () => {
+    document.getElementById('typePassphrase').style.display = 'none';
+    document.getElementById('typePassBox').value = '';
+    document.getElementById('activeSession').style.display = 'block';
+    targetPassphrase = localStorage.getItem('passPhrase');
+    document.getElementById('targetPassphrase').innerText = targetPassphrase;
+});
+
+document.getElementById('typePassBox').addEventListener('input', (event) => {
+    //console.log("key pressed:");
+    //console.log(event.target.value);
+    if (event.target.value === targetPassphrase){
+        event.target.value = '';
+        returnFromSession();
+    }
+});
+
+/*
+document.getElementById('typePassBox').addEventListener('input', (event) => {
+    console.log("key pressed!");
+    console.log(event.target.value);
+    if (event.target.value === targetPassphrase){
+        returnFromSession();
+    }
+});
+*/
 
 //save variables when popup is closing
 //chrome.windows.onFocusChanged.addListener(function(window) {

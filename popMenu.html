@@ -50,20 +50,24 @@
       <button id="timerDisplay">00:00:00</button>
       
       <div id="hiddenMessage">
-        <div>Session Complete</div>
-        <div style="margin-bottom: 10px"><button id="sessionEndReturn">Return</button><button class="exitButton">Exit</button></div>
+        <div style="text-align: center">Session Complete</div>
+        <div style="display:block; width: 100%; margin-bottom: 10px; margin-left:auto; margin-right:auto"><button id="sessionEndReturn">Return</button><button class="exitButton">Exit</button></div>
       </div>
       <!--put dots like baseball to represent next big break-->
       <button id="overrideButton">Override Lock-In session</button>
       <!--maybe clicking the clock should pause it-->
       <button id="pauseButton">Pause Lock-In session</button>
       <button id="blockThisSite">Add current site to block list</button>
-      
-
-
     </div>
 
+    <div id="typePassphrase">
+      <h1>Type Passphrase</h1>
+      //put a box around this?
+      <p id="targetPassphrase">PlaceHolder Text</p>
+      <textarea type="text" id="typePassBox" placeholder="Retype Passphrase Here"></textarea>
+      <button id="cancelOverride">Cancel Override</button>
 
+    </div>
 
   </body>
   <script src="popupScript.js"></script>

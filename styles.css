@@ -12,6 +12,9 @@ div{
 #popupSettings{
     display: none;
 }
+#typePassphrase{
+    display: none;
+}
 h1{
     margin-bottom: 0px;
 }
@@ -42,16 +45,12 @@ button{
     cursor: default;
 }
 #hiddenMessage{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 5px;
+    text-align: center;
     opacity: 0;
     pointer-events: none;
     transition: opacity ease 1s;
     margin-top: 5px; 
     font-size: larger;
-    align-items: center;
     width: 100%;
 }
 #backButton{

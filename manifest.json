@@ -6,5 +6,6 @@
     "action": {
       "default_popup": "popMenu.html",
       "default_icon": "PEIcon.png"
-    }
+    },
+    "permissions": ["activeTab"]
   }
