@@ -1,8 +1,24 @@
 //idea: first check if the tab is in the list
+chrome.storage.local.get("blockList", function(value){
+  goodSite = true;
+  console.log(value.blockList);
+  const lineList = value.blockList.split('\n');
+  lineList.forEach(element => {
+    console.log()
+    if (location.href.includes(element)){
+      goodSite = false;
+      console.log("hit!!!");
+      console.log(element);
+    }
+  });
+  if (!goodSite){
+    blockSite();
+  }
+}); 
 
 //Then create the whole page using javascript
-alert("running content script!333");
-const overlay = document.createElement('div');
+function blockSite(){
+  const overlay = document.createElement('div');
   overlay.style.boxSizing = 'border-box';
   overlay.id = 'lockInExtensionOverlay';
   overlay.style.position = 'fixed';
@@ -21,7 +37,6 @@ const overlay = document.createElement('div');
   const passphraseReminder = document.createElement('p');
   styleElement(passphraseReminder);
   chrome.storage.local.get("passPhrase", function(value){
-    console.log(value.passPhrase);
     if (value){
       passphraseReminder.innerText = value.passPhrase;
     }
@@ -92,3 +107,4 @@ const overlay = document.createElement('div');
     element.style.setProperty('line-height', '1.3', 'important');
 
   }
+}

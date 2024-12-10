@@ -1,11 +1,11 @@
 function saveSettings(){
     const passText = document.getElementById('passInput').value
-    localStorage.setItem('passPhrase', trim(passText));
-    chrome.storage.local.set({'passPhrase': trim(passText)});
+    localStorage.setItem('passPhrase', passText.trim());
+    chrome.storage.local.set({'passPhrase': passText.trim()});
 
     const blockList = document.getElementById('blockList').value
-    localStorage.setItem('blockList', trim(blockList));
-    chrome.storage.local.set({'blockList': trim(blockList)});
+    localStorage.setItem('blockList', blockList.trim());
+    chrome.storage.local.set({'blockList': blockList.trim()});
 }
 
 function returnFromSession(){
@@ -151,7 +151,9 @@ document.getElementById('blockThisSite').addEventListener('click', () => {
         console.log(tab.url);
         console.log(match);
         if (match){
-            localStorage.setItem('blockList', match[1] + '\n' + localStorage.getItem('blockList'));
+            const newBlockList = match[1] + '\n' + localStorage.getItem('blockList');
+            localStorage.setItem('blockList', newBlockList);
+            chrome.storage.local.set({'blockList': newBlockList});
         } else {
             alert("Can't block this site, sorry");
         }
