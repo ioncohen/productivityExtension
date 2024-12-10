@@ -1,11 +1,11 @@
 function saveSettings(){
     const passText = document.getElementById('passInput').value
-    localStorage.setItem('passPhrase', passText);
-    chrome.storage.local.set({'passPhrase': passText});
+    localStorage.setItem('passPhrase', trim(passText));
+    chrome.storage.local.set({'passPhrase': trim(passText)});
 
     const blockList = document.getElementById('blockList').value
-    localStorage.setItem('blockList', blockList);
-    chrome.storage.local.set({'blockList': blockList});
+    localStorage.setItem('blockList', trim(blockList));
+    chrome.storage.local.set({'blockList': trim(blockList)});
 }
 
 function returnFromSession(){
