@@ -145,8 +145,7 @@ if (localStorage.getItem('activeSession') === 'true')
     startClock();
 
 //add current page to block list
-document.getElementById('blockThisSite').addEventListener('click', () => {
-    
+document.getElementsByClassName('blockThisSite').addEventListener('click', () => {
     (async () => {
         // get last focused window from chrome
         const [tab] = await chrome.tabs.query({active: true, currentWindow: true});

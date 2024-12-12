@@ -40,7 +40,7 @@ checkAndBlock();
 
 function reactToStorageChange(changes, area){
   //oh there is probably an infinite loop? or do gets fire this event?
-  alert("detected a change");
+  //alert("detected a change");
   if(changes.blockList || changes.targetDate){
     checkAndBlock();
   }
@@ -112,7 +112,7 @@ function constructOverlay(){
     console.log("receiving input!!");
     if (inputField.value === passphraseReminder.innerText){
       unblockPage();
-      alert("unblocking page!");
+      //alert("unblocking page!");
     }
   });
 }
