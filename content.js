@@ -1,6 +1,7 @@
 //TODO: redo this so that it doesnt reset all the stuff if its not necessary.
 const overlay = document.createElement('div');
 const inputField = document.createElement('input');
+const originalOverflow = document.body.style.overflow;
 var timeOut = -1;
 constructOverlay();
 
@@ -130,10 +131,31 @@ function styleElement(element){
 
 function unblockPage(){
   overlay.style.setProperty('display', 'none', 'important');
+  restoreOverflow();
+  setInterval(ensureOverflow, 1000);
+  setInterval(ensureOverflow, 2000);
   inputField.value === '';
   clearTimeout(timeOut);
 }
 
+function restoreOverflow(){
+  document.body.style.overflow = originalOverflow;
+}
+
+function pauseAllMedia(){
+  document.querySelectorAll('audio, video').forEach(el => el.pause());
+  document.body.style.overflow = 'hidden';
+}
+
 function blockPage(){
+  // Pause all media elements (video, audio)
+  pauseAllMedia();
+  setTimeout(pauseAllMedia, 1000);
+  setTimeout(pauseAllMedia, 2000);
+  // Disable scrolling
+
+  inputField.value === ''; //probably redundant
+
+  //make the overlay visible
   overlay.style.setProperty('display', 'flex', 'important');
 }
