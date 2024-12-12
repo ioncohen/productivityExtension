@@ -1,5 +1,8 @@
-//idea: first check if the tab is in the list
+//TODO: redo this so that it doesnt reset all the stuff if its not necessary.
 const overlay = document.createElement('div');
+const inputField = document.createElement('input');
+var timeOut = -1;
+constructOverlay();
 
 function checkAndBlock(){
   chrome.storage.local.get('targetDate', function(targetDateValue){
@@ -18,13 +21,16 @@ function checkAndBlock(){
           }
         });
         if (!goodSite){
-          blockSite();
+          blockPage();
+          timeOut = setTimeout(unblockPage, targetDateValue.targetDate - Date.now());
         } else {
-          overlay.style.display = 'none';
+          //undo a possible previously made display
+          unblockPage();
         }
       });
     } else {
-      overlay.style.display = 'none';
+      //undo if unjustly blocked.
+      unblockPage();
     } 
   });
 }
@@ -42,7 +48,7 @@ function reactToStorageChange(changes, area){
 chrome.storage.onChanged.addListener(reactToStorageChange);
 
 //Then create the whole page using javascript
-function blockSite(){
+function constructOverlay(){
   //alert("blocking page!");
   overlay.style.boxSizing = 'border-box';
   overlay.id = 'lockInExtensionOverlay';
@@ -51,8 +57,8 @@ function blockSite(){
   overlay.style.left = '0';
   overlay.style.width = '100%';
   overlay.style.height = '100%';
-  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-  overlay.style.display = 'flex';
+  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.75)';
+  overlay.style.display = 'none';
   overlay.style.justifyContent = 'center';
   overlay.style.alignItems = 'center';
   overlay.style.zIndex = '9999';
@@ -84,8 +90,6 @@ function blockSite(){
   heading.style.fontSize = '30px';
   heading.style.fontWeight = 300;
 
-
-  const inputField = document.createElement('input');
   inputField.type = 'text';
   inputField.id = 'lockInExtensionPassphraseInput';
   inputField.placeholder = 'Enter passphrase';
@@ -103,32 +107,33 @@ function blockSite(){
   // Add the overlay to the page
   document.body.appendChild(overlay);
 
-
-
   inputField.addEventListener('input', () => {
     console.log("receiving input!!");
     if (inputField.value === passphraseReminder.innerText){
-      inputField.value = '';
       unblockPage();
       alert("unblocking page!");
     }
   });
-  //set default styles for all elements in the overlay
-  function styleElement(element){
-    element.style.backgroundColor = 'white';
-    element.style.fontFamily = 'Arial, Helvetica, sans-serif';
-    element.style.color = 'black';
-    element.style.margin = '5px';
-    element.style.fontSize = '20px';
-    element.style.setProperty('font-size', 'border-box', 'important');
-    element.style.setProperty('box-sizing', 'border-box', 'important');
-    element.style.setProperty('line-height', '1.3', 'important');
-  }
+}
 
-  function unblockPage(){
-    overlay.style.setProperty('display', 'none', 'important');
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+//set default styles for all elements in the overlay
+function styleElement(element){
+  element.style.backgroundColor = 'white';
+  element.style.fontFamily = 'Arial, Helvetica, sans-serif';
+  element.style.color = 'black';
+  element.style.margin = '5px';
+  element.style.fontSize = '20px';
+  element.style.setProperty('font-size', 'border-box', 'important');
+  element.style.setProperty('box-sizing', 'border-box', 'important');
+  element.style.setProperty('line-height', '1.3', 'important');
+}
 
-    //change this later to ask how long
-  }
+function unblockPage(){
+  overlay.style.setProperty('display', 'none', 'important');
+  inputField.value === '';
+  clearTimeout(timeOut);
+}
+
+function blockPage(){
+  overlay.style.setProperty('display', 'flex', 'important');
 }
