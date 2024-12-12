@@ -12,6 +12,8 @@ function returnFromSession(){
     document.getElementById('typePassphrase').style.display = 'none';
     document.getElementById('activeSession').style.display = 'none';
     document.getElementById('popupMain').style.display = 'block';
+    localStorage.setItem('targetDate', Date.now()-50000);
+    chrome.storage.local.set({'targetDate' : Date.now()-50000});
     localStorage.setItem('sessionActive', 'false');
     document.getElementById('hiddenMessage').style.opacity = '0';
     document.getElementById('hiddenMessage').style.pointerEvents = 'none';

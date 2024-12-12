@@ -1,6 +1,7 @@
 //idea: first check if the tab is in the list
+const overlay = document.createElement('div');
+
 function checkAndBlock(){
-  //alert("running checkandblock!");
   chrome.storage.local.get('targetDate', function(targetDateValue){
     if (targetDateValue.targetDate > Date.now()){
       //we are in an active session
@@ -18,8 +19,12 @@ function checkAndBlock(){
         });
         if (!goodSite){
           blockSite();
+        } else {
+          overlay.style.display = 'none';
         }
       });
+    } else {
+      overlay.style.display = 'none';
     } 
   });
 }
@@ -28,6 +33,7 @@ checkAndBlock();
 
 function reactToStorageChange(changes, area){
   //oh there is probably an infinite loop? or do gets fire this event?
+  alert("detected a change");
   if(changes.blockList || changes.targetDate){
     checkAndBlock();
   }
@@ -38,7 +44,6 @@ chrome.storage.onChanged.addListener(reactToStorageChange);
 //Then create the whole page using javascript
 function blockSite(){
   //alert("blocking page!");
-  const overlay = document.createElement('div');
   overlay.style.boxSizing = 'border-box';
   overlay.id = 'lockInExtensionOverlay';
   overlay.style.position = 'fixed';
