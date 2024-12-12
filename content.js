@@ -1,23 +1,43 @@
 //idea: first check if the tab is in the list
-chrome.storage.local.get("blockList", function(value){
-  goodSite = true;
-  console.log(value.blockList);
-  const lineList = value.blockList.split('\n');
-  lineList.forEach(element => {
-    console.log()
-    if (location.href.includes(element)){
-      goodSite = false;
-      console.log("hit!!!");
-      console.log(element);
-    }
+function checkAndBlock(){
+  //alert("running checkandblock!");
+  chrome.storage.local.get('targetDate', function(targetDateValue){
+    if (targetDateValue.targetDate > Date.now()){
+      //we are in an active session
+      chrome.storage.local.get("blockList", function(value){
+        goodSite = true;
+        console.log(value.blockList);
+        const lineList = value.blockList.split('\n');
+        lineList.forEach(element => {
+          console.log()
+          if (location.href.includes(element)){
+            goodSite = false;
+            console.log("hit!!!");
+            console.log(element);
+          }
+        });
+        if (!goodSite){
+          blockSite();
+        }
+      });
+    } 
   });
-  if (!goodSite){
-    blockSite();
+}
+
+checkAndBlock();
+
+function reactToStorageChange(changes, area){
+  //oh there is probably an infinite loop? or do gets fire this event?
+  if(changes.blockList || changes.targetDate){
+    checkAndBlock();
   }
-}); 
+}
+
+chrome.storage.onChanged.addListener(reactToStorageChange);
 
 //Then create the whole page using javascript
 function blockSite(){
+  //alert("blocking page!");
   const overlay = document.createElement('div');
   overlay.style.boxSizing = 'border-box';
   overlay.id = 'lockInExtensionOverlay';
@@ -86,15 +106,8 @@ function blockSite(){
       inputField.value = '';
       unblockPage();
       alert("unblocking page!");
-  }
+    }
   });
-
-  function unblockPage(){
-    overlay.style.setProperty('display', 'none', 'important');
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0)';
-    //change this later to ask how long
-  }
-
   //set default styles for all elements in the overlay
   function styleElement(element){
     element.style.backgroundColor = 'white';
@@ -105,5 +118,12 @@ function blockSite(){
     element.style.setProperty('font-size', 'border-box', 'important');
     element.style.setProperty('box-sizing', 'border-box', 'important');
     element.style.setProperty('line-height', '1.3', 'important');
+  }
+
+  function unblockPage(){
+    overlay.style.setProperty('display', 'none', 'important');
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+
+    //change this later to ask how long
   }
 }

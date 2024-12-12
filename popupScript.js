@@ -42,6 +42,7 @@ document.getElementById('startSessionButton').addEventListener('click', () => {
         document.getElementById('activeSession').style.display = 'block';
         localStorage.setItem('sessionActive', 'true');
         localStorage.setItem('targetDate', Date.now() + Math.floor(sessionLength*(60000)));
+        chrome.storage.local.set({'targetDate': Date.now() + Math.floor(sessionLength*(60000))}); // save target date for content scripts to access
         console.log("stored time!");
         console.log(`currentTime: ${Date.now()}`);
         startClock();
