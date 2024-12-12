@@ -105,6 +105,5 @@ function blockSite(){
     element.style.setProperty('font-size', 'border-box', 'important');
     element.style.setProperty('box-sizing', 'border-box', 'important');
     element.style.setProperty('line-height', '1.3', 'important');
-
   }
 }

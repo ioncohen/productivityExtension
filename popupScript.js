@@ -151,9 +151,14 @@ document.getElementById('blockThisSite').addEventListener('click', () => {
         console.log(tab.url);
         console.log(match);
         if (match){
-            const newBlockList = match[1] + '\n' + localStorage.getItem('blockList');
-            localStorage.setItem('blockList', newBlockList);
-            chrome.storage.local.set({'blockList': newBlockList});
+            currentBlockList = localStorage.getItem('blockList');
+            if (currentBlockList.includes(match[1] + "\n") || currentBlockList.endsWith(match[1])){
+                alert("already blocked");
+            } else {
+                const newBlockList = match[1] + '\n' + localStorage.getItem('blockList');
+                localStorage.setItem('blockList', newBlockList);
+                chrome.storage.local.set({'blockList': newBlockList});
+            }
         } else {
             alert("Can't block this site, sorry");
         }
