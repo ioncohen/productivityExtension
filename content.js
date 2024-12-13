@@ -132,8 +132,8 @@ function styleElement(element){
 function unblockPage(){
   overlay.style.setProperty('display', 'none', 'important');
   restoreOverflow();
-  setInterval(ensureOverflow, 1000);
-  setInterval(ensureOverflow, 2000);
+  setInterval(restoreOverflow, 1000);
+  setInterval(restoreOverflow, 2000);
   inputField.value === '';
   clearTimeout(timeOut);
 }

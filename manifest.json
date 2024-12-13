@@ -1,12 +1,15 @@
 {
     "manifest_version": 3,
-    "name": "Productivity Enforcer",
+    "name": "Lock In",
     "description": "Stop wasting time on distracting sites",
     "version": "1.0",
     "action": {
       "default_popup": "popMenu.html",
       "default_icon": "PEIcon.png"
     },
+    "icons": { "16" : "PEIcon16.png",
+               "48" : "PEIcon48.png",
+               "128" : "PEIcon128.png"},
     "permissions": ["activeTab", "storage"],
     "content_scripts": [
       {
