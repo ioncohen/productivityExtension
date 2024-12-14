@@ -64,6 +64,7 @@ function constructOverlay(){
   overlay.style.alignItems = 'center';
   overlay.style.zIndex = '9999';
   overlay.style.gap = '0px';
+  //overlay.style.filter = 'blur(8x)';
 
   //create the passphrase typing target:
   const passphraseReminder = document.createElement('p');
@@ -100,9 +101,29 @@ function constructOverlay(){
 
   styleElement(inputField);
 
+  //hidden stuff for the minutes input
+  const minutesInputField = document.createElement('input');
+  minutesInputField.style.width = '20%';
+  minutesInputField.style.display = 'none';
+
+  const minutesEnterButton = document.createElement('button');
+  minutesEnterButton.innerText = 'Enter';
+  minutesEnterButton.style.display = 'none';
+
+  const cancelUnblockButton = document.createElement('button');
+  cancelUnblockButton.innerText = 'Cancel';
+  cancelUnblockButton.style.display = 'none';
+
+  
+
   passphraseBox.appendChild(heading);
   passphraseBox.appendChild(passphraseReminder);
   passphraseBox.appendChild(inputField);
+
+  passphraseBox.appendChild(minutesInputField);
+  passphraseBox.appendChild(minutesEnterButton);
+  passphraseBox.appendChild(cancelUnblockButton);
+
   overlay.appendChild(passphraseBox);
 
   // Add the overlay to the page
@@ -111,9 +132,43 @@ function constructOverlay(){
   inputField.addEventListener('input', () => {
     console.log("receiving input!!");
     if (inputField.value === passphraseReminder.innerText){
-      unblockPage();
+        askForMinutes();
       //alert("unblocking page!");
     }
+  });
+
+  function askForMinutes(){
+    //hide old elements
+    inputField.style.display = 'none';
+    inputField.value = '';
+    passphraseReminder.style.display = 'none';
+
+    //display new elements
+    heading.textContent = 'Unblock for how many minutes? (0 to cancel)';
+    minutesInputField.style.display = 'block';
+    minutesEnterButton.style.display = 'block';
+    cancelUnblockButton.style.display = 'block';
+  }
+
+  function exitAskForMinutes(){
+    //hide new elements
+    minutesInputField.style.display = 'none';
+    minutesInputField.innerText = '';
+    minutesEnterButton.style.display = 'none';
+    cancelUnblockButton.style.display = 'none';
+
+    //redisplay old elements
+    heading.textContent = 'Enter passphrase to access site';
+    passphraseReminder.style.display = 'block';
+    inputField.style.display = 'block';
+  }
+
+  cancelUnblockButton.addEventListener('click', exitAskForMinutes);
+  minutesEnterButton.addEventListener('click', () => {
+    alert(`you entered: ${minutesInputField.value}`);
+    minutesInputField.value = '';
+    exitAskForMinutes();
+    unblockPage();
   });
 }
 
