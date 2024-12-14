@@ -132,8 +132,8 @@ function styleElement(element){
 function unblockPage(){
   overlay.style.setProperty('display', 'none', 'important');
   restoreOverflow();
-  setInterval(restoreOverflow, 1000);
-  setInterval(restoreOverflow, 2000);
+  setTimeout(restoreOverflow, 1000);
+  setTimeout(restoreOverflow, 2000);
   inputField.value === '';
   clearTimeout(timeOut);
 }
@@ -144,7 +144,7 @@ function restoreOverflow(){
 
 function pauseAllMedia(){
   document.querySelectorAll('audio, video').forEach(el => el.pause());
-  document.body.style.overflow = 'hidden';
+  document.body.style.setProperty('overflow', 'hidden', 'important');
 }
 
 function blockPage(){
