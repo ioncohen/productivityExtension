@@ -50,7 +50,7 @@ chrome.storage.onChanged.addListener(reactToStorageChange);
 
 //Then create the whole page using javascript
 function constructOverlay(){
-  //alert("blocking page!");
+  //alert("blocking page!")
   overlay.style.boxSizing = 'border-box';
   overlay.id = 'lockInExtensionOverlay';
   overlay.style.position = 'fixed';
@@ -58,13 +58,13 @@ function constructOverlay(){
   overlay.style.left = '0';
   overlay.style.width = '100%';
   overlay.style.height = '100%';
-  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.75)';
+  overlay.style.backdropFilter = 'blur(4px)';
+  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
   overlay.style.display = 'none';
   overlay.style.justifyContent = 'center';
   overlay.style.alignItems = 'center';
   overlay.style.zIndex = '9999';
   overlay.style.gap = '0px';
-  //overlay.style.filter = 'blur(8x)';
 
   //create the passphrase typing target:
   const passphraseReminder = document.createElement('p');
