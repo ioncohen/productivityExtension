@@ -144,8 +144,13 @@ function startClock() {
 if (localStorage.getItem('activeSession') === 'true')
     startClock();
 
-//add current page to block list
-document.getElementsByClassName('blockThisSite').addEventListener('click', () => {
+//Listen to all "blockThisSite" buttons, and add current site to blockList.
+blockThisSiteButtons = document.getElementsByClassName('blockThisSite');
+for(button of blockThisSiteButtons){
+    button.addEventListener('click', blockThisSiteListener);
+}
+
+function blockThisSiteListener(){
     (async () => {
         // get last focused window from chrome
         const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
@@ -165,7 +170,7 @@ document.getElementsByClassName('blockThisSite').addEventListener('click', () =>
             alert("Can't block this site, sorry");
         }
       })();
-});
+}
 
 document.getElementById('overrideButton').addEventListener('click', () => {
     document.getElementById('activeSession').style.display = 'none';
