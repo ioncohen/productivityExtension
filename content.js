@@ -1,20 +1,29 @@
-//TODO: redo this so that it doesnt reset all the stuff if its not necessary.
+//TODO: redo this so that it doesnt reset all the stuff if its not necessary
 const overlay = document.createElement('div');
 const inputField = document.createElement('input');
 const originalOverflow = document.body.style.overflow;
 var timeOut = -1;
+var reblockTimer = -1;
 constructOverlay();
 
 function checkAndBlock(){
-  chrome.storage.local.get('targetDate', function(targetDateValue){
-    if (targetDateValue.targetDate > Date.now()){
+  chrome.storage.local.get(['targetDate', 'blockList', 'temporaryUnblockDates', 'temporaryUnblockList'], function(storageReturn){
+    //debug code:
+    if (storageReturn.temporaryUnblockDates){
+      console.log("DateS:");
+      console.log(storageReturn.temporaryUnblockDates);
+    }
+    if (storageReturn.temporaryUnblockList){
+      console.log("siteList:");
+      console.log(storageReturn.temporaryUnblockList);
+    }
+
+    if (storageReturn.targetDate > Date.now()){
       //we are in an active session
-      chrome.storage.local.get("blockList", function(value){
         goodSite = true;
-        console.log(value.blockList);
-        const lineList = value.blockList.split('\n');
+        // TODO: maybe the popup should do this when it saves or adds things?
+        const lineList = storageReturn.blockList.split('\n');
         lineList.forEach(element => {
-          console.log()
           if (location.href.includes(element)){
             goodSite = false;
             console.log("hit!!!");
@@ -22,14 +31,41 @@ function checkAndBlock(){
           }
         });
         if (!goodSite){
-          blockPage();
-          timeOut = setTimeout(unblockPage, targetDateValue.targetDate - Date.now());
+          //check if temporarily Unblocked
+
+          const match = location.href.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
+          const siteIndex = (storageReturn.temporaryUnblockList) ? storageReturn.temporaryUnblockList.indexOf(match[1]) : -1;
+          if (siteIndex === -1){
+            console.log("blocking because site not in exception list");
+            blockPage();
+          } else if (storageReturn.temporaryUnblockDates[siteIndex] > Date.now()){
+            //set the timer to be the lesser of the unblock date or 
+            console.log("unblocking, because Site is in exception list and the date is in the future!");
+            unblockPage();
+            //TODO: maybe should clear previous timer before adding this new one?
+            if (storageReturn.temporaryUnblockDates[siteIndex] < storageReturn.targetDate){
+              clearTimeout(reblockTimer);
+              reblockTimer = setTimeout(blockPage, storageReturn.temporaryUnblockDates[siteIndex] - Date.now());
+            }
+          } else {
+            console.log("blocking because unblock time is in the wrong range!");
+            console.log("current time:");
+            console.log(Date.now());
+            console.log("------------");
+            console.log("unblockDate:");
+            console.log(storageReturn.temporaryUnblockDates[siteIndex]);
+            blockPage();
+          }
+          //todo: move this so it only gets run if the page actually gets blocked?
+          clearTimeout(timeOut);
+          timeOut = setTimeout(unblockPage, storageReturn.targetDate - Date.now());
         } else {
+          //we are in a good site
           //undo a possible previously made display
           unblockPage();
         }
-      });
     } else {
+      //not in an active session
       //undo if unjustly blocked.
       unblockPage();
     } 
@@ -41,7 +77,7 @@ checkAndBlock();
 function reactToStorageChange(changes, area){
   //oh there is probably an infinite loop? or do gets fire this event?
   //alert("detected a change");
-  if(changes.blockList || changes.targetDate){
+  if(changes.blockList || changes.targetDate || changes.temporaryUnblockDates){
     checkAndBlock();
   }
 }
@@ -164,8 +200,45 @@ function constructOverlay(){
   }
 
   cancelUnblockButton.addEventListener('click', exitAskForMinutes);
+
   minutesEnterButton.addEventListener('click', () => {
-    alert(`you entered: ${minutesInputField.value}`);
+    alert(`blocking page for: ${minutesInputField.value} minutes`);
+    const milliseconds = Math.floor(Number(minutesInputField.value)*60000);
+    //TODO: error check the input value.
+    //localStorage.setItem('reblockDate', minutesInputField.value*(60000) + Date.now());
+    chrome.storage.local.get(['temporaryUnblockList', 'temporaryUnblockDates'], function(storageValue){
+      if (storageValue.temporaryUnblockList){
+        console.log("unblockList already exists! :)");
+        const match = location.href.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
+        const siteIndex = storageValue.temporaryUnblockList.indexOf(match[1]);
+        if (siteIndex !== -1){
+          console.log("updating previous unblockDate!");
+          storageValue.temporaryUnblockDates[siteIndex] = milliseconds + Date.now()
+          ;
+        } else {
+          storageValue.temporaryUnblockList.push(match[1]);
+          storageValue.temporaryUnblockDates.push(milliseconds + Date.now());
+        }
+        
+        //hopefully this should cause check and block to run 
+        
+        chrome.storage.local.set({
+          'temporaryUnblockList'  : storageValue.temporaryUnblockList,
+          'temporaryUnblockDates' : storageValue.temporaryUnblockDates
+        });
+      } else {
+        //first ever block, set new arrays
+        console.log("setting unblock lists for the first time!!!");
+        chrome.storage.local.set({
+          'temporaryUnblockList'  : [`${match[1]}`],
+          'temporaryUnblockDates' : [milliseconds + Date.now()]
+        });
+      }
+    });
+
+    //TODO: add a timer element to the corner of the page?
+    
+
     minutesInputField.value = '';
     exitAskForMinutes();
     unblockPage();
@@ -190,7 +263,8 @@ function unblockPage(){
   setTimeout(restoreOverflow, 1000);
   setTimeout(restoreOverflow, 2000);
   inputField.value === '';
-  clearTimeout(timeOut);
+  //why are we doing this?
+  //clearTimeout(timeOut);
 }
 
 function restoreOverflow(){
