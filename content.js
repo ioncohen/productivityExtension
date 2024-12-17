@@ -287,6 +287,7 @@ function styleElement(element){
 }
 
 function unblockPage(){
+  mutationDebounce = 1000;
   pageBlocked = false;
   reinforceState();
   overlay.style.setProperty('display', 'none', 'important');
@@ -295,17 +296,9 @@ function unblockPage(){
   //clearTimeout(timeOut);
 }
 
-//function restoreOverflow(){
-//  document.body.style.overflow = originalOverflow;
-//}
-
-//function pauseAllMedia(){
- // document.querySelectorAll('audio, video').forEach(el => el.pause());
- // document.body.style.setProperty('overflow', 'hidden', 'important');
-//}
-
 function blockPage(){
   // Pause all media elements (video, audio)
+  mutationDebounce = 250;
   pageBlocked = true;
   reinforceState();
   // Disable scrolling
