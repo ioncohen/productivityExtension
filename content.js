@@ -1,10 +1,15 @@
 //TODO: redo this so that it doesnt reset all the stuff if its not necessary
 const overlay = document.createElement('div');
 const inputField = document.createElement('input');
+
+const miniTimer = document.createElement('button');
+var miniTimerTarget = 0;
+
 const originalOverflow = document.body.style.overflow;
 var timeOut = -1;
 var reblockTimer = -1;
 constructOverlay();
+constructMiniTimer();
 
 var mutationDebounce = 200;
 var mutationTimeout = -1;
@@ -19,8 +24,11 @@ const dynamicLoadingObserver = new MutationObserver((entries)=> {
   console.log("mutation Observed!!!");
   console.log(entries);
   //trick to debounce mutation observation.
-  clearTimeout(mutationTimeout);
-  mutationTimeout = setTimeout(reinforceState, mutationDebounce);
+  if (entries[0].addedNodes.length && entries[0].addedNodes[0].nodeType !== 3){
+    console.log("reacting!!!");
+    clearTimeout(mutationTimeout);
+    mutationTimeout = setTimeout(reinforceState, mutationDebounce);
+  }
 });
 
 function reinforceState() {
@@ -76,6 +84,11 @@ function checkAndBlock(){
           } else if (storageReturn.temporaryUnblockDates[siteIndex] > Date.now()){
             //set the timer to be the lesser of the unblock date or 
             console.log("unblocking, because Site is in exception list and the date is in the future!");
+            
+            miniTimerTarget = Math.min(storageReturn.temporaryUnblockDates[siteIndex], storageReturn.targetDate);
+            miniTimer.style.display = 'flex';
+            editMiniTimer();
+            
             unblockPage();
             //TODO: maybe should clear previous timer before adding this new one?
             if (storageReturn.temporaryUnblockDates[siteIndex] < storageReturn.targetDate){
@@ -114,6 +127,37 @@ function reactToStorageChange(changes, area){
 chrome.storage.onChanged.addListener(reactToStorageChange);
 
 //Then create the whole page using javascript
+function constructMiniTimer(){
+  miniTimer.innerText = "00:00:00";
+  styleElement(miniTimer);
+  miniTimer.style.display = 'none';
+  miniTimer.style.position = 'fixed';
+  miniTimer.style.top = '0';
+  miniTimer.style.left = '0';
+  miniTimer.style.zIndex = '9999';
+
+  document.body.appendChild(miniTimer);
+}
+
+function editMiniTimer(){
+  console.log("running EDITMINITIMER");
+  const remainingTime = miniTimerTarget - Date.now();
+  if (remainingTime > 0){
+    const hours = Math.floor(remainingTime / (1000 * 60 * 60));  // Hours
+    const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));  // Minutes
+    const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);  // Seconds
+    miniTimer.innerText = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+    setTimeout(editMiniTimer, 1000);
+  } else {
+    miniTimer.innerText = "00:00:00";
+    miniTimer.style.display = 'none';
+  }
+}
+
+function padZero(number) {
+  return number < 10 ? `0${number}` : `${number}`;
+}
+
 function constructOverlay(){
   //alert("blocking page!")
   overlay.style.boxSizing = 'border-box';
@@ -168,14 +212,17 @@ function constructOverlay(){
 
   //hidden stuff for the minutes input
   const minutesInputField = document.createElement('input');
+  styleElement(minutesInputField);
   minutesInputField.style.width = '20%';
   minutesInputField.style.display = 'none';
 
   const minutesEnterButton = document.createElement('button');
+  styleElement(minutesEnterButton);
   minutesEnterButton.innerText = 'Enter';
   minutesEnterButton.style.display = 'none';
 
   const cancelUnblockButton = document.createElement('button');
+  styleElement(cancelUnblockButton);
   cancelUnblockButton.innerText = 'Cancel';
   cancelUnblockButton.style.display = 'none';
 
