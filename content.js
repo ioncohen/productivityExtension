@@ -6,6 +6,41 @@ var timeOut = -1;
 var reblockTimer = -1;
 constructOverlay();
 
+var mutationDebounce = 200;
+var mutationTimeout = -1;
+
+var pageBlocked = false;
+
+// ok so the problem we are facing is that media pausing and scrolling disabling often happens before the page is finished loading.
+// also need to make sure scrolling RE-ENABLING happens when the page is done loading.
+// right now, when the page is blocked, the pausing and scrolling gets run 3 times for the first 3 seconds.
+// want to make it so that at all times, when a mutation is observed, we reapply those things.
+const dynamicLoadingObserver = new MutationObserver((entries)=> {
+  console.log("mutation Observed!!!");
+  console.log(entries);
+  //trick to debounce mutation observation.
+  clearTimeout(mutationTimeout);
+  mutationTimeout = setTimeout(reinforceState, mutationDebounce);
+});
+
+function reinforceState() {
+  if (pageBlocked){
+    document.querySelectorAll('audio, video').forEach(el => el.pause());
+    document.body.style.setProperty('overflow', 'hidden', 'important');
+  } else {
+    document.body.style.overflow = originalOverflow;
+  }
+}
+
+
+dynamicLoadingObserver.observe(document.body, {
+  childList: true,         // Track additions/removals of child nodes
+  subtree: true,           // Track mutations in the entire DOM tree
+  attributes: false,        // Track changes to element attributes
+  characterData: false     // Track changes to text nodes   // No filter on specific attributes
+});
+
+
 function checkAndBlock(){
   chrome.storage.local.get(['targetDate', 'blockList', 'temporaryUnblockDates', 'temporaryUnblockList'], function(storageReturn){
     //debug code:
@@ -48,12 +83,6 @@ function checkAndBlock(){
               reblockTimer = setTimeout(blockPage, storageReturn.temporaryUnblockDates[siteIndex] - Date.now());
             }
           } else {
-            console.log("blocking because unblock time is in the wrong range!");
-            console.log("current time:");
-            console.log(Date.now());
-            console.log("------------");
-            console.log("unblockDate:");
-            console.log(storageReturn.temporaryUnblockDates[siteIndex]);
             blockPage();
           }
           //todo: move this so it only gets run if the page actually gets blocked?
@@ -258,29 +287,27 @@ function styleElement(element){
 }
 
 function unblockPage(){
+  pageBlocked = false;
+  reinforceState();
   overlay.style.setProperty('display', 'none', 'important');
-  restoreOverflow();
-  setTimeout(restoreOverflow, 1000);
-  setTimeout(restoreOverflow, 2000);
   inputField.value === '';
   //why are we doing this?
   //clearTimeout(timeOut);
 }
 
-function restoreOverflow(){
-  document.body.style.overflow = originalOverflow;
-}
+//function restoreOverflow(){
+//  document.body.style.overflow = originalOverflow;
+//}
 
-function pauseAllMedia(){
-  document.querySelectorAll('audio, video').forEach(el => el.pause());
-  document.body.style.setProperty('overflow', 'hidden', 'important');
-}
+//function pauseAllMedia(){
+ // document.querySelectorAll('audio, video').forEach(el => el.pause());
+ // document.body.style.setProperty('overflow', 'hidden', 'important');
+//}
 
 function blockPage(){
   // Pause all media elements (video, audio)
-  pauseAllMedia();
-  setTimeout(pauseAllMedia, 1000);
-  setTimeout(pauseAllMedia, 2000);
+  pageBlocked = true;
+  reinforceState();
   // Disable scrolling
 
   inputField.value === ''; //probably redundant
