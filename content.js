@@ -6,6 +6,8 @@ const miniTimer = document.createElement('button');
 const miniTimerDiv = document.createElement('div');
 var miniTimerTarget = 0;
 
+//index in tempunblocklist of the site we are currently on.
+var tempUnblockIndex = -1;
 const originalOverflow = document.body.style.overflow;
 var timeOut = -1;
 var reblockTimer = -1;
@@ -51,6 +53,7 @@ dynamicLoadingObserver.observe(document.body, {
 
 
 function checkAndBlock(){
+  console.log("running CHECKANDBLOCKKKKK!!!!!");
   chrome.storage.local.get(['targetDate', 'blockList', 'temporaryUnblockDates', 'temporaryUnblockList'], function(storageReturn){
     //debug code:
     if (storageReturn.temporaryUnblockDates){
@@ -85,7 +88,7 @@ function checkAndBlock(){
           } else if (storageReturn.temporaryUnblockDates[siteIndex] > Date.now()){
             //set the timer to be the lesser of the unblock date or 
             console.log("unblocking, because Site is in exception list and the date is in the future!");
-            
+            tempUnblockIndex = siteIndex;
             miniTimerTarget = Math.min(storageReturn.temporaryUnblockDates[siteIndex], storageReturn.targetDate);
             miniTimerDiv.style.display = 'flex';
             editMiniTimer();
@@ -160,6 +163,20 @@ function constructMiniTimer(){
   miniTimerDiv.appendChild(timerX);
 
   document.body.appendChild(miniTimerDiv);
+
+  timerX.addEventListener('click', cancelTempUnblock);
+}
+
+function cancelTempUnblock(){
+  //this will cause the timer to go to 0 and stop updating
+  miniTimerTarget = Date.now();
+  miniTimerDiv.style.display = 'none';
+
+  //now we have to update the target dates of the temp unblock list
+  chrome.storage.local.get(['temporaryUnblockDates'], function(storageReturn){
+    storageReturn.temporaryUnblockDates[tempUnblockIndex] = Date.now()-5;
+    chrome.storage.local.set({'temporaryUnblockDates' : storageReturn.temporaryUnblockDates});
+  });
 }
 
 function editMiniTimer(){
