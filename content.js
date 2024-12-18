@@ -3,6 +3,7 @@ const overlay = document.createElement('div');
 const inputField = document.createElement('input');
 
 const miniTimer = document.createElement('button');
+const miniTimerDiv = document.createElement('div');
 var miniTimerTarget = 0;
 
 const originalOverflow = document.body.style.overflow;
@@ -86,7 +87,7 @@ function checkAndBlock(){
             console.log("unblocking, because Site is in exception list and the date is in the future!");
             
             miniTimerTarget = Math.min(storageReturn.temporaryUnblockDates[siteIndex], storageReturn.targetDate);
-            miniTimer.style.display = 'flex';
+            miniTimerDiv.style.display = 'flex';
             editMiniTimer();
             
             unblockPage();
@@ -128,15 +129,37 @@ chrome.storage.onChanged.addListener(reactToStorageChange);
 
 //Then create the whole page using javascript
 function constructMiniTimer(){
+  //create the div
+  miniTimerDiv.style.display = 'none';
+  miniTimerDiv.style.position = 'fixed';
+  miniTimerDiv.style.top = '0';
+  miniTimerDiv.style.left = '0';
+  miniTimerDiv.style.zIndex = '9999';
+  miniTimerDiv.style.gap = '3px';
+  miniTimerDiv.style.alignContent = 'center';
+
   miniTimer.innerText = "00:00:00";
   styleElement(miniTimer);
-  miniTimer.style.display = 'none';
-  miniTimer.style.position = 'fixed';
-  miniTimer.style.top = '0';
-  miniTimer.style.left = '0';
-  miniTimer.style.zIndex = '9999';
+  miniTimer.style.setProperty('font-size', '8', 'important');
+  miniTimer.style.borderRadius = '0px';
+  miniTimer.style.cursor = 'default';
+  miniTimer.style.margin = '2px';
+  miniTimer.style.padding = '2px';
+  miniTimer.style.border = '1px';
 
-  document.body.appendChild(miniTimer);
+  const timerX = document.createElement('button');
+  styleElement(timerX);
+  timerX.innerText = "✖";
+  timerX.style.borderRadius = '0px';
+  timerX.style.cursor = 'pointer';
+  timerX.style.margin = '2px';
+  timerX.style.padding = '2px';
+  timerX.style.border = '1px';
+
+  miniTimerDiv.appendChild(miniTimer);
+  miniTimerDiv.appendChild(timerX);
+
+  document.body.appendChild(miniTimerDiv);
 }
 
 function editMiniTimer(){
@@ -150,7 +173,7 @@ function editMiniTimer(){
     setTimeout(editMiniTimer, 1000);
   } else {
     miniTimer.innerText = "00:00:00";
-    miniTimer.style.display = 'none';
+    miniTimerDiv.style.display = 'none';
   }
 }
 
