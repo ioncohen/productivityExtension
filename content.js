@@ -1,7 +1,13 @@
-//TODO: redo this so that it doesnt reset all the stuff if its not necessary
+//var link = document.createElement("link");
+//link.href = "lockInOverlayStyles.css";
+//link.type = "text/css";
+//link.rel = "stylesheet";
+//document.getElementsByTagName("head")[0].appendChild(link);
+
 const overlay = document.createElement('div');
 const inputField = document.createElement('input');
 
+const miniTimerDiv = document.createElement('div');
 const miniTimer = document.createElement('button');
 var miniTimerTarget = 0;
 
@@ -86,7 +92,7 @@ function checkAndBlock(){
             console.log("unblocking, because Site is in exception list and the date is in the future!");
             
             miniTimerTarget = Math.min(storageReturn.temporaryUnblockDates[siteIndex], storageReturn.targetDate);
-            miniTimer.style.display = 'flex';
+            miniTimerDiv.style.display = 'flex';
             editMiniTimer();
             
             unblockPage();
@@ -128,15 +134,37 @@ chrome.storage.onChanged.addListener(reactToStorageChange);
 
 //Then create the whole page using javascript
 function constructMiniTimer(){
+  //create the div
+  miniTimerDiv.style.display = 'none';
+  miniTimerDiv.style.position = 'fixed';
+  miniTimerDiv.style.top = '0';
+  miniTimerDiv.style.left = '0';
+  miniTimerDiv.style.zIndex = '9999';
+  miniTimerDiv.style.gap = '3px';
+  miniTimerDiv.style.alignContent = 'center';
+
   miniTimer.innerText = "00:00:00";
   styleElement(miniTimer);
-  miniTimer.style.display = 'none';
-  miniTimer.style.position = 'fixed';
-  miniTimer.style.top = '0';
-  miniTimer.style.left = '0';
-  miniTimer.style.zIndex = '9999';
+  miniTimer.style.setProperty('font-size', '8', 'important');
+  miniTimer.style.borderRadius = '0px';
+  miniTimer.style.cursor = 'default';
+  miniTimer.style.margin = '2px';
+  miniTimer.style.padding = '2px';
+  miniTimer.style.border = '1px';
 
-  document.body.appendChild(miniTimer);
+  const timerX = document.createElement('button');
+  styleElement(timerX);
+  timerX.innerText = "✖";
+  timerX.style.borderRadius = '0px';
+  timerX.style.cursor = 'pointer';
+  timerX.style.margin = '2px';
+  timerX.style.padding = '2px';
+  timerX.style.border = '1px';
+
+  miniTimerDiv.appendChild(miniTimer);
+  miniTimerDiv.appendChild(timerX);
+
+  document.body.appendChild(miniTimerDiv);
 }
 
 function editMiniTimer(){
@@ -150,7 +178,7 @@ function editMiniTimer(){
     setTimeout(editMiniTimer, 1000);
   } else {
     miniTimer.innerText = "00:00:00";
-    miniTimer.style.display = 'none';
+    miniTimerDiv.style.display = 'none';
   }
 }
 
@@ -159,25 +187,12 @@ function padZero(number) {
 }
 
 function constructOverlay(){
-  //alert("blocking page!")
-  overlay.style.boxSizing = 'border-box';
-  overlay.id = 'lockInExtensionOverlay';
-  overlay.style.position = 'fixed';
-  overlay.style.top = '0';
-  overlay.style.left = '0';
-  overlay.style.width = '100%';
-  overlay.style.height = '100%';
-  overlay.style.backdropFilter = 'blur(4px)';
-  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
-  overlay.style.display = 'none';
-  overlay.style.justifyContent = 'center';
-  overlay.style.alignItems = 'center';
-  overlay.style.zIndex = '9999';
-  overlay.style.gap = '0px';
+  overlay.className = 'lockInExtensionClass lockInExtensionOverlayClass';
 
   //create the passphrase typing target:
   const passphraseReminder = document.createElement('p');
-  styleElement(passphraseReminder);
+  passphraseReminder.className = 'lockInExtensionClass';
+
   chrome.storage.local.get("passPhrase", function(value){
     if (value){
       passphraseReminder.innerText = value.passPhrase;
@@ -186,43 +201,28 @@ function constructOverlay(){
 
   // Create the passphrase input box
   const passphraseBox = document.createElement('div');
-  passphraseBox.id = 'lockInExtensionPassphraseBox';
-
-  styleElement(passphraseBox);
-
-  passphraseBox.style.padding = '20px';
-  passphraseBox.style.borderRadius = '8px';
-  passphraseBox.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+  passphraseBox.className = 'lockInExtensionClass lockInExtensionBoxContainerClass';
   
   const heading = document.createElement('h2');
   heading.textContent = 'Enter passphrase to access site';
-  
-  styleElement(heading);
-  heading.style.fontSize = '30px';
-  heading.style.fontWeight = 300;
+  heading.className = 'lockInExtensionClass lockInExtensionHeadingClass'
 
   inputField.type = 'text';
-  inputField.id = 'lockInExtensionPassphraseInput';
+  inputField.className = 'lockInExtensionClass lockInExtensionInputFieldClass';
   inputField.placeholder = 'Enter passphrase';
-  inputField.style.width = '100%';
-  inputField.style.padding = '2px';
-  inputField.style.border = '2px solid black';
-
-  styleElement(inputField);
 
   //hidden stuff for the minutes input
   const minutesInputField = document.createElement('input');
-  styleElement(minutesInputField);
-  minutesInputField.style.width = '20%';
+  minutesInputField.className = 'lockInExtensionClass lockInExtensionMinutesInputField'
   minutesInputField.style.display = 'none';
 
   const minutesEnterButton = document.createElement('button');
-  styleElement(minutesEnterButton);
+  minutesEnterButton.className = 'lockInExtensionClass lockInExtensionFunctionalButton'
   minutesEnterButton.innerText = 'Enter';
   minutesEnterButton.style.display = 'none';
 
   const cancelUnblockButton = document.createElement('button');
-  styleElement(cancelUnblockButton);
+  cancelUnblockButton.className = 'lockInExtensionClass lockInExtensionFunctionalButton'
   cancelUnblockButton.innerText = 'Cancel';
   cancelUnblockButton.style.display = 'none';
 
@@ -328,7 +328,7 @@ function styleElement(element){
   element.style.color = 'black';
   element.style.margin = '5px';
   element.style.fontSize = '20px';
-  element.style.setProperty('font-size', 'border-box', 'important');
+  element.style.setProperty('font-size', '8', 'important');
   element.style.setProperty('box-sizing', 'border-box', 'important');
   element.style.setProperty('line-height', '1.3', 'important');
 }
