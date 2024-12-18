@@ -123,6 +123,9 @@ checkAndBlock();
 function reactToStorageChange(changes, area){
   //oh there is probably an infinite loop? or do gets fire this event?
   //alert("detected a change");
+  if (changes.temporaryUnblockDates){
+    miniTimerTarget = changes.temporaryUnblockDates.newValue[tempUnblockIndex];
+  }
   if(changes.blockList || changes.targetDate || changes.temporaryUnblockDates){
     checkAndBlock();
   }
@@ -207,7 +210,7 @@ function constructOverlay(){
   overlay.style.left = '0';
   overlay.style.width = '100%';
   overlay.style.height = '100%';
-  overlay.style.backdropFilter = 'blur(4px)';
+  overlay.style.backdropFilter = 'blur(6px)';
   overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
   overlay.style.display = 'none';
   overlay.style.justifyContent = 'center';
@@ -320,6 +323,9 @@ function constructOverlay(){
   minutesEnterButton.addEventListener('click', () => {
     alert(`blocking page for: ${minutesInputField.value} minutes`);
     const milliseconds = Math.floor(Number(minutesInputField.value)*60000);
+    if(Number.isNaN(milliseconds)){
+      return;
+    }
     //TODO: error check the input value.
     //localStorage.setItem('reblockDate', minutesInputField.value*(60000) + Date.now());
     chrome.storage.local.get(['temporaryUnblockList', 'temporaryUnblockDates'], function(storageValue){
