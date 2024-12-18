@@ -24,8 +24,8 @@ var pageBlocked = false;
 // right now, when the page is blocked, the pausing and scrolling gets run 3 times for the first 3 seconds.
 // want to make it so that at all times, when a mutation is observed, we reapply those things.
 const dynamicLoadingObserver = new MutationObserver((entries)=> {
-  console.log("mutation Observed!!!");
-  console.log(entries);
+  //console.log("mutation Observed!!!");
+  //console.log(entries);
   //trick to debounce mutation observation.
   if (entries[0].addedNodes.length && entries[0].addedNodes[0].nodeType !== 3){
     console.log("reacting!!!");
@@ -53,18 +53,7 @@ dynamicLoadingObserver.observe(document.body, {
 
 
 function checkAndBlock(){
-  console.log("running CHECKANDBLOCKKKKK!!!!!");
   chrome.storage.local.get(['targetDate', 'blockList', 'temporaryUnblockDates', 'temporaryUnblockList'], function(storageReturn){
-    //debug code:
-    if (storageReturn.temporaryUnblockDates){
-      console.log("DateS:");
-      console.log(storageReturn.temporaryUnblockDates);
-    }
-    if (storageReturn.temporaryUnblockList){
-      console.log("siteList:");
-      console.log(storageReturn.temporaryUnblockList);
-    }
-
     if (storageReturn.targetDate > Date.now()){
       //we are in an active session
         goodSite = true;
@@ -73,8 +62,6 @@ function checkAndBlock(){
         lineList.forEach(element => {
           if (location.href.includes(element)){
             goodSite = false;
-            console.log("hit!!!");
-            console.log(element);
           }
         });
         if (!goodSite){
@@ -83,11 +70,9 @@ function checkAndBlock(){
           const match = location.href.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
           const siteIndex = (storageReturn.temporaryUnblockList) ? storageReturn.temporaryUnblockList.indexOf(match[1]) : -1;
           if (siteIndex === -1){
-            console.log("blocking because site not in exception list");
             blockPage();
           } else if (storageReturn.temporaryUnblockDates[siteIndex] > Date.now()){
             //set the timer to be the lesser of the unblock date or 
-            console.log("unblocking, because Site is in exception list and the date is in the future!");
             tempUnblockIndex = siteIndex;
             miniTimerTarget = Math.min(storageReturn.temporaryUnblockDates[siteIndex], storageReturn.targetDate);
             miniTimerDiv.style.display = 'flex';
@@ -183,7 +168,6 @@ function cancelTempUnblock(){
 }
 
 function editMiniTimer(){
-  console.log("running EDITMINITIMER");
   const remainingTime = miniTimerTarget - Date.now();
   if (remainingTime > 0){
     const hours = Math.floor(remainingTime / (1000 * 60 * 60));  // Hours
@@ -285,7 +269,6 @@ function constructOverlay(){
   document.body.appendChild(overlay);
 
   inputField.addEventListener('input', () => {
-    console.log("receiving input!!");
     if (inputField.value === passphraseReminder.innerText){
         askForMinutes();
       //alert("unblocking page!");
@@ -330,11 +313,9 @@ function constructOverlay(){
     //localStorage.setItem('reblockDate', minutesInputField.value*(60000) + Date.now());
     chrome.storage.local.get(['temporaryUnblockList', 'temporaryUnblockDates'], function(storageValue){
       if (storageValue.temporaryUnblockList){
-        console.log("unblockList already exists! :)");
         const match = location.href.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
         const siteIndex = storageValue.temporaryUnblockList.indexOf(match[1]);
         if (siteIndex !== -1){
-          console.log("updating previous unblockDate!");
           storageValue.temporaryUnblockDates[siteIndex] = milliseconds + Date.now()
           ;
         } else {
@@ -350,7 +331,6 @@ function constructOverlay(){
         });
       } else {
         //first ever block, set new arrays
-        console.log("setting unblock lists for the first time!!!");
         chrome.storage.local.set({
           'temporaryUnblockList'  : [`${match[1]}`],
           'temporaryUnblockDates' : [milliseconds + Date.now()]
