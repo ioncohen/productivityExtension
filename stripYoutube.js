@@ -8,13 +8,10 @@ function stripYoutube(){
     //rip out content bar/suggested videos
     const contentBar = document.getElementById("secondary");
     if (contentBar){
-        console.log("hiding content bar?");
         contentBar.style.setProperty('display', 'none', 'important');
     }
     //rip out comment Section
     const commentSection = document.getElementsByClassName("style-scope ytd-comments");
-    console.log("hiding comment section");
-        console.log(commentSection);
     hideAll(commentSection);
     
     //rip out endscreen content
@@ -30,6 +27,16 @@ function stripYoutube(){
     //rip out video end card "ce-elements"
     const ceElements = document.getElementsByClassName("ytp-ce-element");
     hideAll(ceElements);
+
+    //rip out home screen
+    const homeScreen = document.getElementsByClassName("style-scope ytd-rich-grid-renderer");
+    for(var i = 0; i < homeScreen.length; i++){
+        if (homeScreen[i].id === "contents" && homeScreen[i].tagName === "DIV" ){
+            console.log(homeScreen[i]);
+            homeScreen[i].style.setProperty('display', 'none', 'important');
+        }
+    }
+    
 }
 
 function hideAll(htmlCollection){
