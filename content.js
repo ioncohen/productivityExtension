@@ -6,6 +6,8 @@ const miniTimer = document.createElement('button');
 const miniTimerDiv = document.createElement('div');
 var miniTimerTarget = 0;
 
+stripYoutube();
+
 //index in tempunblocklist of the site we are currently on.
 var tempUnblockIndex = -1;
 const originalOverflow = document.body.style.overflow;
@@ -28,6 +30,7 @@ const dynamicLoadingObserver = new MutationObserver((entries)=> {
   //console.log(entries);
   //trick to debounce mutation observation.
   if (entries[0].addedNodes.length && entries[0].addedNodes[0].nodeType !== 3){
+    stripYoutube();
     console.log("reacting!!!");
     clearTimeout(mutationTimeout);
     mutationTimeout = setTimeout(reinforceState, mutationDebounce);

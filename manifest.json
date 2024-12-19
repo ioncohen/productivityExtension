@@ -13,7 +13,7 @@
     "permissions": ["activeTab", "storage"],
     "content_scripts": [
       {
-        "js": ["content.js"],
+        "js": [ "stripYoutube.js", "content.js"],
         "matches": ["<all_urls>"]
       }
     ]
