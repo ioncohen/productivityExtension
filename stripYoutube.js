@@ -29,9 +29,9 @@ function stripYoutube(){
     hideAll(ceElements);
 
     //rip out home screen
-    const homeScreen = document.getElementsByClassName("style-scope ytd-rich-grid-renderer");
+    const homeScreen = document.getElementsByClassName("style-scope ytd-two-column-browse-results-renderer");
     for(var i = 0; i < homeScreen.length; i++){
-        if (homeScreen[i].id === "contents" && homeScreen[i].tagName === "DIV" ){
+        if (homeScreen[i].id === "primary" && homeScreen[i].tagName === "DIV" ){
             console.log(homeScreen[i]);
             homeScreen[i].style.setProperty('display', 'none', 'important');
         }
