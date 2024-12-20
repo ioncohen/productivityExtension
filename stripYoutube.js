@@ -34,7 +34,6 @@ function stripYoutube(){
     const homeScreen = document.getElementsByClassName("style-scope ytd-two-column-browse-results-renderer");
     for(var i = 0; i < homeScreen.length; i++){
         if (homeScreen[i].id === "primary" && homeScreen[i].tagName === "DIV" ){
-            console.log(homeScreen[i]);
             homeScreen[i].style.setProperty('display', 'none', 'important');
         }
     }

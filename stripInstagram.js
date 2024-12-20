@@ -12,11 +12,20 @@ function stripInstagram(){
     hideAll(suggestedPosts);
 
     //todo: fix bug where going to home doesnt trigger a reaction I think?
-    const reelsbar = document.querySelectorAll('[aria-label="Reels"]');
+    const reelsbar = document.querySelector('[aria-label="Reels"]');
+    console.log(reelsbar);
     //console.log(reelsbar);
-    hideAll(reelsbar);
-    hide(reelsbar[0].parentNode.parentNode.parentNode.parentNode);
-    
+    hide(reelsbar);
+    if (reelsbar){
+        var nodeparent = reelsbar;
+        for (var i = 0; i < 4; i++){
+            if (nodeparent.parentElement){
+                nodeparent = nodeparent.parentElement;
+            }
+        }
+        hide(nodeparent);
+    }
+    //hide(reelsbar[0].parentNode.parentNode.parentNode.parentNode);
     const explorebar = document.querySelectorAll('[aria-label="Explore"]');
     //console.log(reelsbar);
     hideAll(explorebar);
