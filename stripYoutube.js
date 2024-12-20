@@ -1,9 +1,11 @@
 function stripYoutube(){
     //redirect site if its a short.
+    if (!location.href.includes("youtube.com")){
+        return;
+    }
     if (location.href.includes("/shorts/")){
         location.href = location.href.replace("/shorts/", "/watch/");
     }
-
 
     //rip out content bar/suggested videos
     const contentBar = document.getElementById("secondary");
@@ -42,5 +44,10 @@ function stripYoutube(){
 function hideAll(htmlCollection){
     for (var i = 0; i < htmlCollection.length; i++){
         htmlCollection[i].style.setProperty('display', 'none', 'important');
+    }
+}
+function hide(htmlElement){
+    if (htmlElement){
+        htmlElement.style.setProperty('display', 'none', 'important');
     }
 }

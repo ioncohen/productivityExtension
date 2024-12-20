@@ -7,6 +7,8 @@ const miniTimerDiv = document.createElement('div');
 var miniTimerTarget = 0;
 
 stripYoutube();
+stripReddit();
+stripInstagram();
 
 //index in tempunblocklist of the site we are currently on.
 var tempUnblockIndex = -1;
@@ -31,6 +33,8 @@ const dynamicLoadingObserver = new MutationObserver((entries)=> {
   //trick to debounce mutation observation.
   if (entries[0].addedNodes.length && entries[0].addedNodes[0].nodeType !== 3){
     stripYoutube();
+    stripReddit();
+    stripInstagram();
     console.log("reacting!!!");
     clearTimeout(mutationTimeout);
     mutationTimeout = setTimeout(reinforceState, mutationDebounce);
