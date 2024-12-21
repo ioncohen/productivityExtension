@@ -163,12 +163,48 @@ function constructMiniTimer(){
   timerX.style.padding = '2px';
   timerX.style.border = '1px';
 
+  const minimizeArrow = document.createElement('button');
+  styleElement(minimizeArrow);
+  minimizeArrow.style.borderRadius = '0px';
+  minimizeArrow.style.cursor = 'pointer';
+  minimizeArrow.style.margin = '2px';
+  minimizeArrow.style.padding = '4px 8px';
+  minimizeArrow.style.border = '1px';
+
+  const arrowSpan = document.createElement('span');
+  //styleElement(arrowSpan);
+  arrowSpan.innerText = "∧";
+  arrowSpan.style.display = 'inline-block';
+  arrowSpan.style.transition = 'transform 0.3s ease-in';
+  arrowSpan.style.transform = 'rotate(0turn)';
+  minimizeArrow.appendChild(arrowSpan);
+
+  miniTimerDiv.appendChild(minimizeArrow);
   miniTimerDiv.appendChild(miniTimer);
   miniTimerDiv.appendChild(timerX);
 
   document.body.appendChild(miniTimerDiv);
 
   timerX.addEventListener('click', cancelTempUnblock);
+  
+  miniTimerDiv.style.transition = 'transform 0.3s ease-in';
+  minimizeArrow.style.transition = 'transform 0.3s ease-in';
+  minimizeArrow.addEventListener('click', () => {
+    console.log(arrowSpan.style.transform);
+    if (arrowSpan.style.transform.includes('rotate(0turn)')){
+      console.log("minimizing!!!");
+      //minimize timer
+      miniTimerDiv.style.transform = 'translate(0px, -50px)';
+      //this is a dumb solution, but it seems to work perfectly.
+      minimizeArrow.style.transform = 'translate(0px, 50px)';
+      arrowSpan.style.transform = 'rotate(0.5turn) translate(0px, -1px)';
+    } else {
+      console.log("maximizing!!!");
+      miniTimerDiv.style.transform = 'translate(0px, 0px)';
+      minimizeArrow.style.transform = 'translate(0px, 0px)';
+      arrowSpan.style.transform = 'rotate(0turn) translate(0px, 0px)';
+    }
+  });
 }
 
 function cancelTempUnblock(){
