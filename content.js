@@ -68,9 +68,13 @@ function checkAndBlock(){
         goodSite = true;
         // TODO: maybe the popup should do this when it saves or adds things?
         const lineList = storageReturn.blockList.split('\n');
-        lineList.forEach(element => {
-          if (location.href.includes(element)){
+        lineList.forEach(blockListLine => {
+          if (location.href.includes(blockListLine)){
             goodSite = false;
+          } else if(blockListLine[0] === "-" && location.href.includes(blockListLine.slice(1))){
+            //console.log("[][][exception: unblocking!][][]");
+            //console.log(blockListLine);
+            goodSite = true;
           }
         });
         if (!goodSite){
