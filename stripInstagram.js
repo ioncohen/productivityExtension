@@ -26,10 +26,19 @@ function stripInstagram(){
         hide(nodeparent);
     }
     //hide(reelsbar[0].parentNode.parentNode.parentNode.parentNode);
-    const explorebar = document.querySelectorAll('[aria-label="Explore"]');
+    const explorebar = document.querySelector('[aria-label="Explore"]');
     //console.log(reelsbar);
-    hideAll(explorebar);
-    hide(explorebar[0].parentNode.parentNode.parentNode.parentNode);
+    hide(explorebar);
+    if (explorebar){
+        var nodeparent = explorebar;
+        for (var i = 0; i < 4; i++){
+            if (nodeparent.parentElement){
+                nodeparent = nodeparent.parentElement;
+            }
+        }
+        hide(nodeparent);
+    }
+    //hide(explorebar[0].parentNode.parentNode.parentNode.parentNode);
 
     /*for (var i = 0; i < reelsbar.length; i++){
         if (reelsbar[i].getAttribute('aria-describedby')){

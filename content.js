@@ -21,6 +21,7 @@ constructMiniTimer();
 
 var mutationDebounce = 200;
 var mutationTimeout = -1;
+var lastMutationTime = 0;
 
 var pageBlocked = false;
 
@@ -33,18 +34,20 @@ const dynamicLoadingObserver = new MutationObserver((entries)=> {
   //console.log(entries);
   //trick to debounce mutation observation.
   if (entries[0].addedNodes.length && entries[0].addedNodes[0].nodeType !== 3){
-    stripYoutube();
-    stripReddit();
-    stripInstagram();
-    stripTwitter();
-    console.log("reacting!!!");
-    clearTimeout(mutationTimeout);
-    mutationTimeout = setTimeout(reinforceState, mutationDebounce);
+    if (Date.now()-lastMutationTime > 0.25){
+      reinforceState();
+      lastMutationTime = Date.now();
+    }
   }
 });
 
 function reinforceState() {
+    stripYoutube();
+    stripReddit();
+    stripInstagram();
+    stripTwitter();
   if (pageBlocked){
+    console.log("reacting!!!");
     document.querySelectorAll('audio, video').forEach(el => el.pause());
     document.body.style.setProperty('overflow', 'hidden', 'important');
   } else {
