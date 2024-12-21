@@ -5,71 +5,74 @@
   </head>
   
   <body>
-    <div id="popupMain">
-      <h1>Lock In</h1>
-      <div><i class="note">Productivity tool for chromium browsers</i></div>
-      <br>
-      <button id="goToSettingsButton">Edit Settings</button>
-
-      <p class="smallHeader">Start a Session</p>
-          <input type="text" id="sessionLengthInput" placeholder="Minutes of focus">
-          <button>Enter</button>
-          <br>
-          <button id="startSessionButton" style="margin-top:10;">Begin Session</button>
-          <button class="blockThisSite">Add current site to block List</button>
-    </div>
-
-    <div id="popupSettings">
-        <h1>Edit Settings</h1>
-      <p class="smallerHeader" style="margin-top: 5px;"><strong>Edit passphrase:</strong></p>
-      <div><i class="note">You will have to type this out to override the blocker. Up to 500 characters.</i></div>
-      <textarea type="text" id="passInput" placeholder="Type here" wrap="soft"></textarea>
-
-      <p class="smallerHeader"><strong>Edit block list:</strong></p>
-      <div><i class="note">Enter text on each line. Any url containing this text will be blocked</i></div>
-      <textarea type="text" id="blockList" placeholder="Up to 100 lines"></textarea>
-      <div><i class="note">Add a "-" before a line to make an exception</i></div>
-
-
-      <p class="smallHeader"><strong>Extra Settings</strong></p>
-      <form>
-          <input type="checkbox" id="setting1" name="setting1" value="ShortsEnable">
-          <label for="setting1"> Enable Youtube Shorts Redirect (automatically views shorts as normal videos)</label><br>
-          <input type="checkbox" id="setting2" name="setting2" value="DFTubeEnable">
-          <label for="setting2"> Enable Distraction-Free Youtube</label><br>
-          <input type="checkbox" id="setting3" name="setting3" value="DFRedditEnable">
-          <label for="setting3"> Enable Distraction-Free Reddit</label><br>
-          </form>
-
-      <button id="saveSettingsButton">Save</button>
-      <br>
-      <button id="backButton">←</button>
-      <button class="blockThisSite">Add current site to block List</button>
-    </div>
-
-    <div id="activeSession">
-      <h1>Active Session</h1> 
-      <button id="timerDisplay">00:00:00</button>
-      
-      <div id="hiddenMessage">
-        <div style="text-align: center">Session Complete</div>
-        <div style="display:block; width: 100%; margin-bottom: 10px; margin-left:auto; margin-right:auto"><button id="sessionEndReturn">Return</button><button class="exitButton">Exit</button></div>
+    <div id = "roundedInsert">
+      <div id="popupMain">
+        <h1 id="globalTitle">Lock In</h1>
+        <div><i class="note">Productivity tool for chromium browsers</i></div>
+        <br>
+        <p class="smallHeader">Start a Session</p>
+            <input type="text" id="sessionLengthInput" placeholder="Minutes of focus">
+            <button>Enter</button>
+            <br>
+            <button id="startSessionButton" style="margin-top:10;">Begin Session</button>
+            <button class="blockThisSite">Add current site to block List</button>
+  
+            <button id="goToSettingsButton">Edit Settings</button>
       </div>
-      <!--put dots like baseball to represent next big break-->
-      <button id="overrideButton">Override Lock-In session</button>
-      <!--maybe clicking the clock should pause it-->
-      <button id="pauseButton">Pause Lock-In session</button>
-      <button id="blockThisSite" class="blockThisSite">Add current site to block list</button>
+  
+      <div id="popupSettings">
+          <h1>Edit Settings</h1>
+        <p class="smallerHeader" style="margin-top: 5px;"><strong>Edit passphrase:</strong></p>
+        <div><i class="note">You will have to type this out to override the blocker. Up to 500 characters.</i></div>
+        <textarea type="text" id="passInput" placeholder="Type here" wrap="soft"></textarea>
+  
+        <p class="smallerHeader"><strong>Edit block list:</strong></p>
+        <div><i class="note">Enter text on each line. Any url containing this text will be blocked</i></div>
+        <textarea type="text" id="blockList" placeholder="Up to 100 lines"></textarea>
+        <div><i class="note">Add a "-" before a line to make an exception</i></div>
+  
+  
+        <p class="smallHeader"><strong>Extra Settings</strong></p>
+        <form>
+            <input type="checkbox" id="setting1" name="setting1" value="ShortsEnable">
+            <label for="setting1"> Enable Youtube Shorts Redirect (automatically views shorts as normal videos)</label><br>
+            <input type="checkbox" id="setting2" name="setting2" value="DFTubeEnable">
+            <label for="setting2"> Enable Distraction-Free Youtube</label><br>
+            <input type="checkbox" id="setting3" name="setting3" value="DFRedditEnable">
+            <label for="setting3"> Enable Distraction-Free Reddit</label><br>
+            </form>
+  
+        <button id="saveSettingsButton">Save</button>
+        <br>
+        <button id="backButton">←</button>
+        <button class="blockThisSite">Add current site to block List</button>
+      </div>
+  
+      <div id="activeSession">
+        <h1>Active Session</h1> 
+        <button id="timerDisplay">00:00:00</button>
+        
+        <div id="hiddenMessage">
+          <div style="text-align: center">Session Complete</div>
+          <div style="display:block; width: 100%; margin-bottom: 10px; margin-left:auto; margin-right:auto"><button id="sessionEndReturn">Return</button><button class="exitButton">Exit</button></div>
+        </div>
+        <!--put dots like baseball to represent next big break-->
+        <button id="overrideButton">Override Lock-In session</button>
+        <!--maybe clicking the clock should pause it-->
+        <button id="pauseButton">Pause Lock-In session</button>
+        <button id="blockThisSite" class="blockThisSite">Add current site to block list</button>
+      </div>
+  
+      <div id="typePassphrase">
+        <h1>Type Passphrase</h1>
+        //put a box around this?
+        <p id="targetPassphrase">PlaceHolder Text</p>
+        <textarea type="text" id="typePassBox" placeholder="Retype Passphrase Here"></textarea>
+        <button id="cancelOverride">Cancel Override</button>
+  
+      </div>
     </div>
-
-    <div id="typePassphrase">
-      <h1>Type Passphrase</h1>
-      //put a box around this?
-      <p id="targetPassphrase">PlaceHolder Text</p>
-      <textarea type="text" id="typePassBox" placeholder="Retype Passphrase Here"></textarea>
-      <button id="cancelOverride">Cancel Override</button>
-
-    </div>
+    
 
   </body>
   <script src="popupScript.js"></script>
