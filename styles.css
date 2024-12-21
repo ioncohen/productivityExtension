@@ -30,7 +30,7 @@ button{
 #typePassphrase{
     display: none;
 }
-#globalTitle{
+h1{
     margin: 0;
 }
 textarea{
