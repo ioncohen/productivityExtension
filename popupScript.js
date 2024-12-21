@@ -9,12 +9,14 @@ function saveSettings(){
 }
 
 function returnFromSession(){
+    clearTimeout()
     document.getElementById('typePassphrase').style.display = 'none';
     document.getElementById('activeSession').style.display = 'none';
     document.getElementById('popupMain').style.display = 'block';
     localStorage.setItem('targetDate', Date.now()-50000);
     chrome.storage.local.set({'targetDate' : Date.now()-50000});
     localStorage.setItem('sessionActive', 'false');
+    console.log("hiding hidden message!");
     document.getElementById('hiddenMessage').style.opacity = '0';
     document.getElementById('hiddenMessage').style.pointerEvents = 'none';
 }
@@ -94,8 +96,11 @@ function updateCountdown() {
     if (remainingTime <= 0) {
         console.log("The countdown has ended!");
         clearInterval(timerInterval);  // Stop the timer
-        document.getElementById('hiddenMessage').style.opacity = '1';
-        document.getElementById('hiddenMessage').style.pointerEvents = 'auto';
+        if (localStorage.getItem('sessionActive') === 'true'){
+            console.log("displaying hiddenMessage!");
+            document.getElementById('hiddenMessage').style.opacity = '1';
+            document.getElementById('hiddenMessage').style.pointerEvents = 'auto';
+        }
         return;
     }
 
@@ -108,7 +113,7 @@ function updateCountdown() {
     const countdownDisplay = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
     //console.log(countdownDisplay);  //<---for debugging purposes
 
-    // Optional: Update an HTML element instead of logging to the console
+    // update timer html.
     document.getElementById('timerDisplay').innerText = countdownDisplay;
 }
 
