@@ -10,17 +10,39 @@
         <h1 id="globalTitle" style="position: relative; top: -12px">
           <img src="PEIcon48.png" alt="logo" style="width: 32px; height:auto; position: relative; top: 8px" />  Lock In
         </h1>
-        <div><i class="note">Productivity tool for chromium browsers</i></div>
-        <br>
-        <p class="smallHeader">Start a Session</p>
-            <input type="text" id="sessionLengthInput" placeholder="Minutes of focus">
-            <button>Enter</button>
-            <br>
-            <button id="startSessionButton" style="margin-top:10;">Begin Session</button>
-            <button class="blockThisSite">Add current site to block List</button>
-  
-            <button id="goToSettingsButton">Edit Settings</button>
+        <div><i class="note" style = "position: relative; top: -8px">Productivity tool for chromium browsers</i></div>
+        <form>
+          <fieldset>
+            <legend>Start a Session</legend>
+            <div>
+              <label for="sessionLengthInput">Session Length: </label>
+              <input type="text" id="sessionLengthInput" name="sessionLength" placeholder="Minutes of focus">
+            </div>
+            
+            <div>
+              <label for="allowOverridesCheck">Allow Overrides? </label>
+              <input type="checkbox" id ="allowOverridesCheck" checked autocomplete="on" value="allowOverrides">
+            </div>
+            <div style="display: flex; justify-content: center; margin-top: 5px">
+              <input type="submit" id="startSessionButton" value="Begin Session">
+            </div>
+            
+          </fieldset>
+        </form>
+        
+        <p class="smallHeader" style="display: none">Start a Session</p>  
+        <button style="display: none">Enter</button>
+        <button id="startSessionButton" style="margin-top:10; display: none">Begin Session</button>
+        
+        <div class="lineSeparatedDiv">
+          <button id="goToSettingsButton" class="bigButton">Edit Settings, Block List</button>
+        </div>
+        <div class="lineSeparatedDiv">
+          <button class="blockThisSite bigButton" style="font-size: 16">Block current site</button>
+        </div>
+        <div class="lineDiv"></div>
       </div>
+    </div>
   
       <div id="popupSettings">
           <h1>Edit Settings</h1>
@@ -42,7 +64,7 @@
             <label for="setting2"> Enable Distraction-Free Youtube</label><br>
             <input type="checkbox" id="setting3" name="setting3" value="DFRedditEnable">
             <label for="setting3"> Enable Distraction-Free Reddit</label><br>
-            </form>
+        </form>
   
         <button id="saveSettingsButton">Save</button>
         <br>

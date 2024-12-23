@@ -1,3 +1,6 @@
+:root{
+    --darkg: rgb(60,60,60);    
+}
 body{
     width: 300px;  /* Set a fixed width */
     height: 400px; /* Set a fixed height */
@@ -6,17 +9,41 @@ body{
     background-image: url('goldPlate.png');
     align-content: center;
   }
+fieldset{
+    border-color: var(--darkg);
+    border-radius: 6px;
+}
 #roundedInsert{
     width: 240px;  /* Set a fixed width */
     height: 340px;
     margin-left: 17px;
     border: solid;
-    border-color: black;
+    border-color: rgb(40,40,40);
     border-radius: 30px;
     border-width: 3px 3px;
     background: rgb(140,140,140);
     background: radial-gradient(circle, rgba(140,140,140,1) 0%, rgba(90,90,90,1) 100%);
     padding: 10px;
+}
+.lineSeparatedDiv{
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    margin-top: 15px;
+    margin: 0 auto;
+    border-top: 2px solid var(--darkg);
+    width: 98%;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+.lineDiv{
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    margin-top: 15px;
+    margin: 0 auto;
+    border-top: 2px solid var(--darkg);
+    width: 98%;
 }
 button{
     background-color: transparent;
@@ -42,6 +69,7 @@ textarea{
 }
 #sessionLengthInput{
     background-color: transparent;
+    border: 1px solid var(--darkg);
 }
 #blockList {
     white-space: nowrap;
@@ -72,10 +100,10 @@ button{
     width: 100%;
 }
 #backButton{
-font-size: large;
-padding: 10px;  
-border-radius: 20px;
-margin-top: 5px;
+    font-size: large;
+    padding: 10px;  
+    border-radius: 20px;
+    margin-top: 5px;
 }
 .smallHeader{
     margin-bottom: 5px;
@@ -84,7 +112,56 @@ margin-top: 5px;
     margin-bottom: 0px;
 }
 .note{
-color: darkgray;
-font-weight: lighter;
-font-size: smaller;
+    color: darkgray;
+    font-weight: lighter;
+    font-size: 12;
+}
+#startSessionButton{
+    background-color: transparent;
+}
+input[type=checkbox] {
+    margin: 5px;
+    position: relative;
+    cursor: pointer;
+}
+input[type=checkbox]:before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    left: 0;
+    border: 1px solid var(--darkg);
+    border-radius: 3px;
+    background-color:  gray;
+    padding: 1px;
+}
+input[type=checkbox]:checked::before {
+    background-color: goldenrod;
+}
+  
+input[type=checkbox]:checked::after {
+    content: "";
+    display: block;
+    width: 5px;
+    height: 10px;
+    border: solid var(--darkg);
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    position: absolute;
+    top: 2px;
+    left: 6px;
+}
+.bigButton{
+    padding: 10px;
+    font-size: 18;
+}
+input[type=submit]{
+    border-radius: 5px;
+}
+input[type=text]{
+    border-radius: 5px;
 }
