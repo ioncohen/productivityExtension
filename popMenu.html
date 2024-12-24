@@ -5,11 +5,13 @@
   </head>
   
   <body>
-    <div id = "roundedInsert">
-      <div id="popupMain">
+    <div id = "roundedInsert" style="display: block;">
+      <div id="logoHeader">
         <h1 id="globalTitle" style="position: relative; top: -12px">
           <img src="PEIcon48.png" alt="logo" style="width: 32px; height:auto; position: relative; top: 8px" />  Lock In
         </h1>
+      </div>
+      <div id="popupMain">
         <div><i class="note" style = "position: relative; top: -8px">Productivity tool for chromium browsers</i></div>
         <form>
           <fieldset>
@@ -75,20 +77,19 @@
         <h1>Active Session</h1> 
         <button id="timerDisplay">00:00:00</button>
         
-        <div id="hiddenMessage">
-          <div style="text-align: center">Session Complete</div>
-          <div style="display:block; width: 100%; margin-bottom: 10px; margin-left:auto; margin-right:auto"><button id="sessionEndReturn">Return</button><button class="exitButton">Exit</button></div>
-        </div>
+        <div id="hiddenLine" style="margin: 15px; border-top: 1px solid black; width: 100%"></div>
+        <span id="hiddenMessage">
+          <span style="text-align: center">Session Complete: <button id="sessionEndReturn">Return</button><button class="exitButton">Exit</button></span>
+          </span>
         <!--put dots like baseball to represent next big break-->
-        <button id="overrideButton">Override Lock-In session</button>
+        <button id="overrideButton" class="mediumButton">Override Lock-In session</button>
         <!--maybe clicking the clock should pause it-->
-        <button id="pauseButton">Pause Lock-In session</button>
-        <button id="blockThisSite" class="blockThisSite">Add current site to block list</button>
+        <button id="pauseButton" class="mediumButton">Pause Lock-In session</button>
+        <button id="blockThisSite" class="blockThisSite mediumButton" style="margin-bottom: 0px;" >Add current site to block list</button>
       </div>
   
       <div id="typePassphrase">
         <h1>Type Passphrase</h1>
-        //put a box around this?
         <p id="targetPassphrase">PlaceHolder Text</p>
         <textarea type="text" id="typePassBox" placeholder="Retype Passphrase Here"></textarea>
         <button id="cancelOverride">Cancel Override</button>

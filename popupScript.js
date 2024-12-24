@@ -16,9 +16,13 @@ function returnFromSession(){
     localStorage.setItem('targetDate', Date.now()-50000);
     chrome.storage.local.set({'targetDate' : Date.now()-50000});
     localStorage.setItem('sessionActive', 'false');
+    
     console.log("hiding hidden message!");
-    document.getElementById('hiddenMessage').style.opacity = '0';
+    document.getElementById('hiddenMessage').style.opacity = 0;
+    document.getElementById('hiddenMessage').style.display = 'none';
+    
     document.getElementById('hiddenMessage').style.pointerEvents = 'none';
+    document.getElementById('hiddenLine').style.display = 'block';
 }
 
 //Set up event listeners for page navigation buttons
@@ -43,7 +47,7 @@ document.getElementById('startSessionButton').addEventListener('click', () => {
     if (sessionLength){
         //start session, save target date!
         document.getElementById('popupMain').style.display = 'none';
-        document.getElementById('activeSession').style.display = 'block';
+        document.getElementById('activeSession').style.display = 'flex';
         localStorage.setItem('sessionActive', 'true');
         localStorage.setItem('targetDate', Date.now() + Math.floor(sessionLength*(60000)));
         chrome.storage.local.set({'targetDate': Date.now() + Math.floor(sessionLength*(60000))}); // save target date for content scripts to access
@@ -69,7 +73,16 @@ let timerInterval;
 if(localStorage.getItem('sessionActive') === 'true'){
     console.log("session Persist!!!");
     document.getElementById('popupMain').style.display = 'none';
-    document.getElementById('activeSession').style.display = 'block';
+    document.getElementById('activeSession').style.display = 'flex';
+
+    if(localStorage.getItem('targetDate') < Date.now()){
+        //display hiddenMessage ABRUPTLY if past deadline.
+        document.getElementById('hiddenLine').style.display = 'none';
+        document.getElementById('hiddenMessage').style.opacity = '1';
+        document.getElementById('hiddenMessage').style.display = 'block';
+        document.getElementById('hiddenMessage').style.pointerEvents = 'auto';
+    }
+
     startClock();
 }
 
@@ -98,8 +111,10 @@ function updateCountdown() {
         clearInterval(timerInterval);  // Stop the timer
         if (localStorage.getItem('sessionActive') === 'true'){
             console.log("displaying hiddenMessage!");
-            document.getElementById('hiddenMessage').style.opacity = '1';
-            document.getElementById('hiddenMessage').style.pointerEvents = 'auto';
+            if (document.getElementById('hiddenMessage').style.display !== 'block'){
+                document.getElementById('hiddenLine').style.opacity = '0';
+                setTimeout(finishDisplayingHidden, 1000);
+            }
         }
         return;
     }
@@ -115,6 +130,13 @@ function updateCountdown() {
 
     // update timer html.
     document.getElementById('timerDisplay').innerText = countdownDisplay;
+}
+
+function finishDisplayingHidden(){
+    document.getElementById('hiddenLine').style.display = 'none';
+    document.getElementById('hiddenMessage').style.display = 'block';
+    document.getElementById('hiddenMessage').style.pointerEvents = 'auto';
+    setTimeout(()=>{document.getElementById('hiddenMessage').style.opacity = '1'}, 100);
 }
 
 // Function to pad single digit numbers with leading zero (e.g., 3 => "03")
@@ -188,7 +210,7 @@ let targetPassphrase = localStorage.getItem('passPhrase');
 document.getElementById('cancelOverride').addEventListener('click', () => {
     document.getElementById('typePassphrase').style.display = 'none';
     document.getElementById('typePassBox').value = '';
-    document.getElementById('activeSession').style.display = 'block';
+    document.getElementById('activeSession').style.display = 'flex';
     targetPassphrase = localStorage.getItem('passPhrase');
     document.getElementById('targetPassphrase').innerText = targetPassphrase;
 });
