@@ -197,9 +197,17 @@ textarea::placeholder {
     transition: opacity ease 1s;
 }
 #targetPassphrase{
-    border: 1px solid black;
-    border-radius: 2px;   
+    display: block;
+    background-color: darkgray;
+    border-radius: 5px;
+    width: max-content;
+    padding: 10px;
+    margin: 10px;
+    font-size: 16px;
 }
 legend{
     font-size: 20px;
+}
+#typePassBox{
+    font-size: 16px;
 }
