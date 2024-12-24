@@ -28,6 +28,7 @@ function returnFromSession(){
 //Set up event listeners for page navigation buttons
 document.getElementById('goToSettingsButton').addEventListener('click', () => {
     document.getElementById('popupMain').style.display = 'none';
+    document.getElementById('logoHeader').style.display = 'none';
     document.getElementById('popupSettings').style.display = 'block';
     //fill the settings with stored values (maybe do this at the start instead?)
     document.getElementById('passInput').value = localStorage.getItem('passPhrase');
@@ -36,6 +37,7 @@ document.getElementById('goToSettingsButton').addEventListener('click', () => {
 document.getElementById('backButton').addEventListener('click', () => {
     saveSettings();
     document.getElementById('popupSettings').style.display = 'none';
+    document.getElementById('logoHeader').style.display = 'block';
     document.getElementById('popupMain').style.display = 'block';
 });
 

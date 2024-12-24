@@ -26,7 +26,7 @@
               <input type="checkbox" id ="allowOverridesCheck" checked autocomplete="on" value="allowOverrides">
             </div>
             <div style="display: flex; justify-content: center; margin-top: 5px">
-              <input type="submit" id="startSessionButton" value="Begin Session">
+              <button id="startSessionButton">Begin Session</button>
             </div>
             
           </fieldset>
@@ -47,30 +47,27 @@
   
       <div id="popupSettings">
           <h1>Edit Settings</h1>
-        <p class="smallerHeader" style="margin-top: 5px;"><strong>Edit passphrase:</strong></p>
-        <div><i class="note">You will have to type this out to override the blocker. Up to 500 characters.</i></div>
+        <p class="smallerHeader" style="margin-top: 5px;"><strong>Edit passphrase:</strong><img src="infoCircle.svg" class="infoCircle" title="You will have to type this out to override the blocker. Up to 500 characters."/></p>
         <textarea type="text" id="passInput" placeholder="Type here" wrap="soft"></textarea>
   
-        <p class="smallerHeader"><strong>Edit block list:</strong></p>
-        <div><i class="note">Enter text on each line. Any url containing this text will be blocked</i></div>
+        <p class="smallerHeader"><strong>Edit block list:</strong><img src="infoCircle.svg" class="infoCircle" title="Enter text on each line. Any url containing this text will be blocked"/></p>
         <textarea type="text" id="blockList" placeholder="Up to 100 lines"></textarea>
         <div><i class="note">Add a "-" before a line to make an exception</i></div>
   
   
-        <p class="smallHeader"><strong>Extra Settings</strong></p>
+        <p class="smallerHeader"><strong>Extra Settings</strong><img src="infoCircle.svg" class="infoCircle" title="Remove distracting parts of selected sites"/></p>
         <form>
             <input type="checkbox" id="setting1" name="setting1" value="ShortsEnable">
-            <label for="setting1"> Enable Youtube Shorts Redirect (automatically views shorts as normal videos)</label><br>
+            <label for="setting1"> Enable Youtube Shorts Redirect</label><br>
             <input type="checkbox" id="setting2" name="setting2" value="DFTubeEnable">
             <label for="setting2"> Enable Distraction-Free Youtube</label><br>
             <input type="checkbox" id="setting3" name="setting3" value="DFRedditEnable">
             <label for="setting3"> Enable Distraction-Free Reddit</label><br>
         </form>
-  
-        <button id="saveSettingsButton">Save</button>
-        <br>
-        <button id="backButton">←</button>
-        <button class="blockThisSite">Add current site to block List</button>
+        
+        <div id="saveButtonContainer">
+          <button id="saveSettingsButton">Save</button><button id="backButton">Save & Exit</button>
+        </div>
       </div>
   
       <div id="activeSession">

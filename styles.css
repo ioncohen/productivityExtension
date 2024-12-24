@@ -50,9 +50,6 @@ fieldset{
     border-top: 2px solid var(--darkg);
     width: 98%;
 }
-button{
-    background-color: transparent;
-}
 #activeSession{
     position: relative;
     top: -8px;
@@ -96,9 +93,11 @@ button{
     margin-left: auto;
     margin-right: auto;
     font-size: 50;
-    font-weight:bold;
+    font-weight: bold;
     padding: 20px;
     cursor: default;
+    background-color: darkgray;
+    pointer-events: none;
 }
 #hiddenMessage{
     display: none;
@@ -111,25 +110,18 @@ button{
     font-size: larger;
     width: 100%;
 }
-#backButton{
-    font-size: large;
-    padding: 10px;  
-    border-radius: 20px;
-    margin-top: 5px;
-}
 .smallHeader{
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 .smallerHeader{
-    margin-bottom: 0px;
+    font-size: 16;
+    margin-bottom: 2px;
+    margin-top: 5px;
 }
 .note{
     color: darkgray;
     font-weight: lighter;
     font-size: 12;
-}
-#startSessionButton{
-    background-color: darkgray;
 }
 input[type=checkbox] {
     margin: 5px;
@@ -175,13 +167,17 @@ input[type=submit]{
     border-radius: 5px;
     cursor: pointer;
 }
+input[type=submit]:hover{
+    background-color: black;
+    color: red;
+}
 input[type=text]{
     border-radius: 5px;
 }
 textArea{
     border: 1px solid black;
     border-radius: 5px;
-    background-color: transparent;
+    background-color: darkgray;
     color: black;
 }
 textarea::placeholder {
@@ -210,4 +206,25 @@ legend{
 }
 #typePassBox{
     font-size: 16px;
+}
+button:hover {
+    background-color: rgb(140,140,140);
+    transition: 0.3s;
+}
+#hoverButton:hover {
+    background-color: rgb(140,140,140);
+    color: red;
+    transition: 0.3s; 
+}
+#startSessionButton{
+    padding: 5px;
+}
+
+.infoCircle{
+    width: 20;
+    height: 20;
+    position: relative;
+    top: 5px;
+    background-color: darkgray;
+    border-radius:50%;
 }
