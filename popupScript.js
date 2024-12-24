@@ -6,6 +6,19 @@ function saveSettings(){
     const blockList = document.getElementById('blockList').value
     localStorage.setItem('blockList', blockList.trim());
     chrome.storage.local.set({'blockList': blockList.trim()});
+
+    const streamlineYoutube = document.getElementById('streamlineYoutube').checked;
+    const streamlineReddit = document.getElementById('streamlineReddit').checked;
+    const streamlineInstagram = document.getElementById('streamlineInstagram').checked;
+    const streamlineTwitter = true;
+    localStorage.setItem('streamlineYoutube', streamlineYoutube);
+    localStorage.setItem('streamlineReddit', streamlineReddit);
+    localStorage.setItem('streamlineInstagram', streamlineInstagram);
+
+    chrome.storage.local.set({'streamlineYoutube'  : streamlineYoutube, 
+                              'streamlineReddit'   : streamlineReddit, 
+                              'streamlineInstagram': streamlineInstagram,
+                              'streamlineTwitter' : streamlineTwitter});
 }
 
 function returnFromSession(){
@@ -33,7 +46,12 @@ document.getElementById('goToSettingsButton').addEventListener('click', () => {
     //fill the settings with stored values (maybe do this at the start instead?)
     document.getElementById('passInput').value = localStorage.getItem('passPhrase');
     document.getElementById('blockList').value = localStorage.getItem('blockList');
+
+    document.getElementById('streamlineYoutube').checked = localStorage.getItem('streamlineYoutube') === 'true';
+    document.getElementById('streamlineReddit').checked = localStorage.getItem('streamlineReddit') === 'true';
+    document.getElementById('streamlineInstagram').checked = localStorage.getItem('streamlineInstagram') === 'true';
 });
+
 document.getElementById('backButton').addEventListener('click', () => {
     saveSettings();
     document.getElementById('popupSettings').style.display = 'none';

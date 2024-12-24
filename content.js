@@ -6,10 +6,19 @@ const miniTimer = document.createElement('button');
 const miniTimerDiv = document.createElement('div');
 var miniTimerTarget = 0;
 
-stripYoutube();
-stripReddit();
-stripInstagram();
-stripTwitter();
+var streamlineYoutube = false;
+var streamlineReddit = false;
+var streamlineInstagram = false;
+var streamlineTwitter = false;
+
+chrome.storage.local.get(['streamlineYoutube', 'streamlineReddit', 'streamlineInstagram', 'streamlineTwitter'], (storageReturn) => {
+  console.log("storageReturn.streamlineYoutube");
+  console.log(storageReturn.streamlineYoutube);
+  streamlineYoutube = storageReturn.streamlineYoutube;
+  streamlineReddit = storageReturn.streamlineReddit;
+  streamlineInstagram = storageReturn.streamlineInstagram;
+  streamlineTwitter = storageReturn.streamlineTwitter;
+});
 
 //index in tempunblocklist of the site we are currently on.
 var tempUnblockIndex = -1;
@@ -41,11 +50,16 @@ const dynamicLoadingObserver = new MutationObserver((entries)=> {
   }
 });
 
+function stripAll(){
+  if (streamlineYoutube) stripYoutube();
+  if (streamlineReddit) stripReddit();
+  if (streamlineInstagram) stripInstagram();
+  if (streamlineTwitter) stripTwitter();
+}
+
 function reinforceState() {
-    stripYoutube();
-    stripReddit();
-    stripInstagram();
-    stripTwitter();
+  stripAll();
+
   if (pageBlocked){
     console.log("reacting!!!");
     document.querySelectorAll('audio, video').forEach(el => el.pause());
@@ -127,6 +141,26 @@ function reactToStorageChange(changes, area){
   if (changes.temporaryUnblockDates){
     miniTimerTarget = changes.temporaryUnblockDates.newValue[tempUnblockIndex];
   }
+
+  var reStrip = false;
+  if (changes.streamlineYoutube){
+    streamlineYoutube = changes.streamlineYoutube.newValue; 
+    reStrip = true;
+  }
+  if (changes.streamlineReddit){
+    streamlineReddit = changes.streamlineReddit.newValue;
+    reStrip = true;
+  }
+  if (changes.streamlineInstagram){
+    streamlineInstagram = changes.streamlineInstagram.newValue;
+    reStrip = true;
+  }
+  if (changes.streamlineTwitter){
+    streamlineTwitter = changes.streamlineTwitter.newValue;
+    reStrip = true;
+  }
+  if (restrip) stripAll();
+
   if(changes.blockList || changes.targetDate || changes.temporaryUnblockDates){
     checkAndBlock();
   }
