@@ -10,15 +10,17 @@ function saveSettings(){
     const streamlineYoutube = document.getElementById('streamlineYoutube').checked;
     const streamlineReddit = document.getElementById('streamlineReddit').checked;
     const streamlineInstagram = document.getElementById('streamlineInstagram').checked;
-    const streamlineTwitter = true;
+    const streamlineTwitter = document.getElementById('streamlineTwitter').checked;
+
     localStorage.setItem('streamlineYoutube', streamlineYoutube);
     localStorage.setItem('streamlineReddit', streamlineReddit);
     localStorage.setItem('streamlineInstagram', streamlineInstagram);
+    localStorage.setItem('streamlineTwitter', streamlineTwitter);
 
     chrome.storage.local.set({'streamlineYoutube'  : streamlineYoutube, 
                               'streamlineReddit'   : streamlineReddit, 
                               'streamlineInstagram': streamlineInstagram,
-                              'streamlineTwitter' : streamlineTwitter});
+                              'streamlineTwitter'  : streamlineTwitter});
 }
 
 function returnFromSession(){
@@ -50,6 +52,8 @@ document.getElementById('goToSettingsButton').addEventListener('click', () => {
     document.getElementById('streamlineYoutube').checked = localStorage.getItem('streamlineYoutube') === 'true';
     document.getElementById('streamlineReddit').checked = localStorage.getItem('streamlineReddit') === 'true';
     document.getElementById('streamlineInstagram').checked = localStorage.getItem('streamlineInstagram') === 'true';
+    document.getElementById('streamlineTwitter').checked = localStorage.getItem('streamlineTwitter') === 'true';
+
 });
 
 document.getElementById('backButton').addEventListener('click', () => {
