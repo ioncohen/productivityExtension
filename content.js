@@ -80,6 +80,11 @@ dynamicLoadingObserver.observe(document.body, {
 
 function checkAndBlock(){
   chrome.storage.local.get(['targetDate', 'blockList', 'temporaryUnblockDates', 'temporaryUnblockList'], function(storageReturn){
+    //if theres no block list, no need to check everything?
+    if(!storageReturn.blockList){
+      unblockPage();
+      return;
+    }
     if (storageReturn.targetDate > Date.now()){
       //we are in an active session
         goodSite = true;
@@ -138,6 +143,17 @@ checkAndBlock();
 function reactToStorageChange(changes, area){
   //oh there is probably an infinite loop? or do gets fire this event?
   //alert("detected a change");
+  if (changes.targetDate){
+    //either new session started or old session canceled.
+    if (changes.targetDate.newValue < Date.now()){
+      //old session canceled.
+      //  forget old reblocks
+      clearTimeout(reblockTimer);
+      //hopefully stop timer?
+      miniTimerTarget = changes.targetDate.newValue;
+    }
+  }
+  
   if (changes.temporaryUnblockDates){
     miniTimerTarget = changes.temporaryUnblockDates.newValue[tempUnblockIndex];
   }
@@ -159,7 +175,7 @@ function reactToStorageChange(changes, area){
     streamlineTwitter = changes.streamlineTwitter.newValue;
     reStrip = true;
   }
-  if (restrip) stripAll();
+  if (reStrip) stripAll();
 
   if(changes.blockList || changes.targetDate || changes.temporaryUnblockDates){
     checkAndBlock();
@@ -396,7 +412,8 @@ function constructOverlay(){
       return;
     }
     //TODO: error check the input value.
-    //localStorage.setItem('reblockDate', minutesInputField.value*(60000) + Date.now());
+    
+    //edit temporary unblock list and dates
     chrome.storage.local.get(['temporaryUnblockList', 'temporaryUnblockDates'], function(storageValue){
       if (storageValue.temporaryUnblockList){
         const match = location.href.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
@@ -410,13 +427,13 @@ function constructOverlay(){
         }
         
         //hopefully this should cause check and block to run 
-        
         chrome.storage.local.set({
           'temporaryUnblockList'  : storageValue.temporaryUnblockList,
           'temporaryUnblockDates' : storageValue.temporaryUnblockDates
         });
       } else {
-        //first ever block, set new arrays
+        //first ever unblock, set new arrays!
+        const match = location.href.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
         chrome.storage.local.set({
           'temporaryUnblockList'  : [`${match[1]}`],
           'temporaryUnblockDates' : [milliseconds + Date.now()]

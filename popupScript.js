@@ -1,3 +1,37 @@
+
+function initialize(){
+    if (localStorage.getItem('initialized')){
+        return;
+    } else {
+        //set defaults for streamlines
+        localStorage.setItem('streamlineYoutube', 'false');
+        localStorage.setItem('streamlineReddit', 'false');
+        localStorage.setItem('streamlineInstagram', 'false');
+        localStorage.setItem('streamlineTwitter', 'false');
+        chrome.storage.local.set({'streamlineYoutube'  : false, 
+                                  'streamlineReddit'   : false, 
+                                  'streamlineInstagram': false,
+                                  'streamlineTwitter'  : false});
+        
+        //set default passphrase
+        localStorage.setItem('passPhrase', 'default passphrase');
+        chrome.storage.local.set({'passPhrase' : 'default passphrase'});
+        
+        //TODO: set default blockList somehow? hope i dont have to
+        
+        //set default session settings
+        localStorage.setItem('targetDate', Date.now()-50000);
+        chrome.storage.local.set({'targetDate' : Date.now()-50000});
+        localStorage.setItem('sessionActive', 'false');
+        
+
+        //set a reminder to not initialize in the future
+        localStorage.setItem('initialized', 'true');
+    }
+}
+
+initialize();
+
 function saveSettings(){
     const passText = document.getElementById('passInput').value
     localStorage.setItem('passPhrase', passText.trim());
@@ -29,6 +63,7 @@ function returnFromSession(){
     document.getElementById('activeSession').style.display = 'none';
     document.getElementById('popupMain').style.display = 'block';
     localStorage.setItem('targetDate', Date.now()-50000);
+    //should trigger check and block.
     chrome.storage.local.set({'targetDate' : Date.now()-50000});
     localStorage.setItem('sessionActive', 'false');
     
@@ -236,12 +271,12 @@ document.getElementById('cancelOverride').addEventListener('click', () => {
     document.getElementById('typePassBox').value = '';
     document.getElementById('activeSession').style.display = 'flex';
     targetPassphrase = localStorage.getItem('passPhrase');
+
+    //TODO:remove this? and investigate weird targetPassphrase shenanigans
     document.getElementById('targetPassphrase').innerText = targetPassphrase;
 });
 
 document.getElementById('typePassBox').addEventListener('input', (event) => {
-    //console.log("key pressed:");
-    //console.log(event.target.value);
     if (event.target.value === targetPassphrase){
         event.target.value = '';
         returnFromSession();
