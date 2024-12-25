@@ -12,8 +12,6 @@ var streamlineInstagram = false;
 var streamlineTwitter = false;
 
 chrome.storage.local.get(['streamlineYoutube', 'streamlineReddit', 'streamlineInstagram', 'streamlineTwitter'], (storageReturn) => {
-  console.log("storageReturn.streamlineYoutube");
-  console.log(storageReturn.streamlineYoutube);
   streamlineYoutube = storageReturn.streamlineYoutube;
   streamlineReddit = storageReturn.streamlineReddit;
   streamlineInstagram = storageReturn.streamlineInstagram;
@@ -61,7 +59,7 @@ function reinforceState() {
   stripAll();
 
   if (pageBlocked){
-    console.log("reacting!!!");
+    //console.log("reacting!!!");
     document.querySelectorAll('audio, video').forEach(el => el.pause());
     document.body.style.setProperty('overflow', 'hidden', 'important');
   } else {
@@ -244,16 +242,13 @@ function constructMiniTimer(){
   miniTimerDiv.style.transition = 'transform 0.3s ease-in';
   minimizeArrow.style.transition = 'transform 0.3s ease-in';
   minimizeArrow.addEventListener('click', () => {
-    console.log(arrowSpan.style.transform);
     if (arrowSpan.style.transform.includes('rotate(0turn)')){
-      console.log("minimizing!!!");
       //minimize timer
       miniTimerDiv.style.transform = 'translate(0px, -50px)';
       //this is a dumb solution, but it seems to work perfectly.
       minimizeArrow.style.transform = 'translate(0px, 50px)';
       arrowSpan.style.transform = 'rotate(0.5turn) translate(0px, -1px)';
     } else {
-      console.log("maximizing!!!");
       miniTimerDiv.style.transform = 'translate(0px, 0px)';
       minimizeArrow.style.transform = 'translate(0px, 0px)';
       arrowSpan.style.transform = 'rotate(0turn) translate(0px, 0px)';

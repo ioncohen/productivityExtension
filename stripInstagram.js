@@ -13,7 +13,6 @@ function stripInstagram(){
 
     //todo: fix bug where going to home doesnt trigger a reaction I think?
     const reelsbar = document.querySelector('[aria-label="Reels"]');
-    console.log(reelsbar);
     //console.log(reelsbar);
     hide(reelsbar);
     if (reelsbar){
@@ -38,15 +37,4 @@ function stripInstagram(){
         }
         hide(nodeparent);
     }
-    //hide(explorebar[0].parentNode.parentNode.parentNode.parentNode);
-
-    /*for (var i = 0; i < reelsbar.length; i++){
-        if (reelsbar[i].getAttribute('aria-describedby')){
-            console.log("-----reelsbar-----");
-            console.log(reelsbar[i].getAttribute('aria-describedby'));
-            console.log("-----reelsbar-----");
-            //hide(reelsbar[i]);
-            //#mount_0_0_OT > div > div > div > div.x9f619.x1n2onr6.x1ja2u2z > div > div > div.x78zum5.xdt5ytf.x1t2pt76.x1n2onr6.x1ja2u2z.x10cihs4 > div.x9f619.xvbhtw8.x78zum5.x168nmei.x13lgxp2.x5pf9jr.xo71vjh.x1uhb9sk.x1plvlek.xryxfnj.x1c4vz4f.x2lah0s.x1q0g3np.xqjyukv.x1qjc9v5.x1oa3qoh.x1qughib > div.x9f619.xjbqb8w.x78zum5.x168nmei.x13lgxp2.x5pf9jr.xo71vjh.xixxii4.x13vifvy.x1plvlek.xryxfnj.x1c4vz4f.x2lah0s.xdt5ytf.xqjyukv.x1qjc9v5.x1oa3qoh.x1nhvcw1.x1dr59a3.xeq5yr9.x1n327nk > div > div > div > div > div.x1iyjqo2.xh8yej3 > div:nth-child(4) > span
-        }
-    }   */
 }

@@ -67,7 +67,7 @@ function returnFromSession(){
     chrome.storage.local.set({'targetDate' : Date.now()-50000});
     localStorage.setItem('sessionActive', 'false');
     
-    console.log("hiding hidden message!");
+    //hide hidden message
     document.getElementById('hiddenMessage').style.opacity = 0;
     document.getElementById('hiddenMessage').style.display = 'none';
     
@@ -100,9 +100,7 @@ document.getElementById('backButton').addEventListener('click', () => {
 
 //start session Button
 document.getElementById('startSessionButton').addEventListener('click', () => {
-    console.log("trying to start session");
     const sessionLength = Number(document.getElementById("sessionLengthInput").value)
-    console.log(sessionLength);
     if (sessionLength){
         //start session, save target date!
         document.getElementById('popupMain').style.display = 'none';
@@ -110,8 +108,6 @@ document.getElementById('startSessionButton').addEventListener('click', () => {
         localStorage.setItem('sessionActive', 'true');
         localStorage.setItem('targetDate', Date.now() + Math.floor(sessionLength*(60000)));
         chrome.storage.local.set({'targetDate': Date.now() + Math.floor(sessionLength*(60000))}); // save target date for content scripts to access
-        console.log("stored time!");
-        console.log(`currentTime: ${Date.now()}`);
         startClock();
     } else {
         console.log("ERROR: Not a valid number");
@@ -128,9 +124,9 @@ document.getElementById('saveSettingsButton').addEventListener('click', () => {
 });
 
 let timerInterval;
+
 //remember if there is an active session in progress
-if(localStorage.getItem('sessionActive') === 'true'){
-    console.log("session Persist!!!");
+if(localStorage.getItem('sessionActive') === 'true'){ 
     document.getElementById('popupMain').style.display = 'none';
     document.getElementById('activeSession').style.display = 'flex';
 
@@ -166,10 +162,9 @@ function updateCountdown() {
 
     // If the target date has passed, stop the countdown
     if (remainingTime <= 0) {
-        console.log("The countdown has ended!");
         clearInterval(timerInterval);  // Stop the timer
         if (localStorage.getItem('sessionActive') === 'true'){
-            console.log("displaying hiddenMessage!");
+            //display hidden message
             if (document.getElementById('hiddenMessage').style.display !== 'block'){
                 document.getElementById('hiddenLine').style.opacity = '0';
                 setTimeout(finishDisplayingHidden, 1000);
@@ -185,7 +180,6 @@ function updateCountdown() {
 
     // Display the countdown in the format: HH:MM:SS
     const countdownDisplay = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
-    //console.log(countdownDisplay);  //<---for debugging purposes
 
     // update timer html.
     document.getElementById('timerDisplay').innerText = countdownDisplay;
@@ -241,8 +235,8 @@ function blockThisSiteListener(){
         // get last focused window from chrome
         const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
         const match = tab.url.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
-        console.log(tab.url);
-        console.log(match);
+        
+        // check if match works (on an actual site)
         if (match){
             currentBlockList = localStorage.getItem('blockList');
             if (currentBlockList.includes(match[1] + "\n") || currentBlockList.endsWith(match[1])){
@@ -282,22 +276,3 @@ document.getElementById('typePassBox').addEventListener('input', (event) => {
         returnFromSession();
     }
 });
-
-/*
-document.getElementById('typePassBox').addEventListener('input', (event) => {
-    console.log("key pressed!");
-    console.log(event.target.value);
-    if (event.target.value === targetPassphrase){
-        returnFromSession();
-    }
-});
-*/
-
-//save variables when popup is closing
-//chrome.windows.onFocusChanged.addListener(function(window) {
-//    saveSett
-//});
-
-console.log("Popup Script Finished");
-
-
