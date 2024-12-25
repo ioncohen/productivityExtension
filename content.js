@@ -406,11 +406,12 @@ function constructOverlay(){
   cancelUnblockButton.addEventListener('click', exitAskForMinutes);
 
   minutesEnterButton.addEventListener('click', () => {
-    alert(`blocking page for: ${minutesInputField.value} minutes`);
     const milliseconds = Math.floor(Number(minutesInputField.value)*60000);
     if(Number.isNaN(milliseconds)){
+      alert(`Not a valid number`);
       return;
     }
+    alert(`unblocking page for: ${minutesInputField.value} minutes`);
     //TODO: error check the input value.
     
     //edit temporary unblock list and dates
