@@ -11,6 +11,9 @@
                "48" : "PEIcon48.png",
                "128" : "PEIcon128.png"},
     "permissions": ["activeTab", "storage"],
+    "background": {
+      "service_worker" : "background.js"
+    },
     "content_scripts": [
       {
         "js": [ "stripYoutube.js", "stripReddit.js", "stripInstagram.js", "stripTwitter.js", "content.js"],

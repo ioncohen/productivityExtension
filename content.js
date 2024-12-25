@@ -143,6 +143,10 @@ checkAndBlock();
 function reactToStorageChange(changes, area){
   //oh there is probably an infinite loop? or do gets fire this event?
   //alert("detected a change");
+  //react to change in password
+  if (changes.passPhrase){
+    document.getElementById('lockInExtensionPassphraseReminder').innerText = changes.passPhrase.newValue;
+  }
   if (changes.targetDate){
     //either new session started or old session canceled.
     if (changes.targetDate.newValue < Date.now()){
@@ -306,6 +310,7 @@ function constructOverlay(){
 
   //create the passphrase typing target:
   const passphraseReminder = document.createElement('p');
+  passphraseReminder.id = "lockInExtensionPassphraseReminder";
   styleElement(passphraseReminder);
   chrome.storage.local.get("passPhrase", function(value){
     if (value){
