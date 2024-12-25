@@ -228,3 +228,8 @@ button:hover {
     background-color: darkgray;
     border-radius:50%;
 }
+#checkboxColumn{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
