@@ -24,7 +24,9 @@ function initialize(){
         chrome.storage.local.set({'targetDate' : Date.now()-50000});
         localStorage.setItem('sessionActive', 'false');
         
-
+        //set default block list:
+        localStorage.setItem('blockList', "example.com\nexample.org");
+        chrome.storage.local.set({'blockList' : "example.com\nexample.org"});
         //set a reminder to not initialize in the future
         localStorage.setItem('initialized', 'true');
     }
