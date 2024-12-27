@@ -15,6 +15,9 @@ function  stripTwitter(){
     const whoToFollow = document.querySelector('[aria-label="Who to follow"]');
     hide(whoToFollow);
 
+    if (!location.href.includes("/x.com/home")){
+        return;
+    }
     //find timeline home
     const homeTimeline = document.querySelector('[aria-label="Timeline: Your Home Timeline"]');
 
@@ -28,6 +31,7 @@ function  stripTwitter(){
             }
         }
     }
-    homeTimeline.style.display = 'flex';
+    if(homeTimeline && homeTimeline.style) homeTimeline.style.display = 'flex';
+    
 
 }
