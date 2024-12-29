@@ -2,6 +2,8 @@
 const overlay = document.createElement('div');
 const inputField = document.createElement('input');
 
+var storedHref = location.href;
+
 const miniTimer = document.createElement('button');
 const miniTimerDiv = document.createElement('div');
 var miniTimerTarget = 0;
@@ -40,6 +42,12 @@ const dynamicLoadingObserver = new MutationObserver((entries)=> {
   //console.log("mutation Observed!!!");
   //console.log(entries);
   //trick to debounce mutation observation.
+  //check if href has changed
+  if (location.href !== storedHref){
+    storedHref = location.href;
+    //console.log(storedHref);
+    checkAndBlock();
+  }
   if (entries[0].addedNodes.length && entries[0].addedNodes[0].nodeType !== 3){
     if (Date.now()-lastMutationTime > 0.25){
       reinforceState();
@@ -77,14 +85,16 @@ dynamicLoadingObserver.observe(document.body, {
 
 
 function checkAndBlock(){
+  //console.log("CHECKANDBLOCKING");
   chrome.storage.local.get(['targetDate', 'blockList', 'temporaryUnblockDates', 'temporaryUnblockList'], function(storageReturn){
     //if theres no block list, no need to check everything?
     if(!storageReturn.blockList){
       unblockPage();
       return;
     }
+    //check if we are in a work session
     if (storageReturn.targetDate > Date.now()){
-      //we are in an active session
+      //we are in an active session. check if we are in a blocked site or a good one
         goodSite = true;
         // TODO: maybe the popup should do this when it saves or adds things?
         const lineList = storageReturn.blockList.split('\n');
@@ -103,8 +113,10 @@ function checkAndBlock(){
           const match = location.href.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
           const siteIndex = (storageReturn.temporaryUnblockList) ? storageReturn.temporaryUnblockList.indexOf(match[1]) : -1;
           if (siteIndex === -1){
+            //not in the block list, so this is a bad site, and not temp unblocked. Block page.
             blockPage();
           } else if (storageReturn.temporaryUnblockDates[siteIndex] > Date.now()){
+            //we are temp unblocked
             //set the timer to be the lesser of the unblock date or 
             tempUnblockIndex = siteIndex;
             miniTimerTarget = Math.min(storageReturn.temporaryUnblockDates[siteIndex], storageReturn.targetDate);
@@ -112,15 +124,17 @@ function checkAndBlock(){
             editMiniTimer();
             
             unblockPage();
-            //TODO: maybe should clear previous timer before adding this new one?
             if (storageReturn.temporaryUnblockDates[siteIndex] < storageReturn.targetDate){
+              //temp unblock ends before the work session does, so ser a normal timer to reblock
               clearTimeout(reblockTimer);
-              reblockTimer = setTimeout(blockPage, storageReturn.temporaryUnblockDates[siteIndex] - Date.now());
+              reblockTimer = setTimeout(checkAndBlock, storageReturn.temporaryUnblockDates[siteIndex] - Date.now());
             }
           } else {
+            //unblock is in the past, so irrelevant. Block the page
             blockPage();
           }
           //todo: move this so it only gets run if the page actually gets blocked?
+          //sets a timer to unblock the page at the end of the session, regardless of if we blocked it just now.
           clearTimeout(timeOut);
           timeOut = setTimeout(unblockPage, storageReturn.targetDate - Date.now());
         } else {
