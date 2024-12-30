@@ -236,10 +236,10 @@ button:hover {
     margin-bottom: 5px;
 }
 #infBlock{
-    font-size: 24;
-    border-radius: 50px;
+    line-height: 0.6;
+    font-size: 26;
     padding: 2px;
-    white-space: pre;
+    border-radius:10px;
     position: relative;
     top: 4px;
 }
