@@ -13,24 +13,21 @@
       </div>
       <div id="popupMain">
         <div><i class="note" style = "position: relative; top: -8px">Productivity tool for chromium browsers</i></div>
-        <form>
-          <fieldset>
-            <legend>Start a Session</legend>
-            <div>
-              <label for="sessionLengthInput">Session Length: </label>
-              <input type="text" id="sessionLengthInput" name="sessionLength" placeholder="Minutes of focus">
-            </div>
-            
-            <div>
-              <label for="allowOverridesCheck">Allow Overrides? </label>
-              <input type="checkbox" id ="allowOverridesCheck" checked autocomplete="on" value="allowOverrides">
-            </div>
-            <div style="display: flex; justify-content: center; margin-top: 5px">
-              <button id="startSessionButton">Begin Session</button>
-            </div>
-            
-          </fieldset>
-        </form>
+        <fieldset style="margin-bottom: 12px;">
+          <legend>Start a Session</legend>
+          <div>
+            <label for="sessionLengthInput">Session Length: </label><br>
+            <input type="text" id="sessionLengthInput" name="sessionLength" placeholder="Minutes of focus"><button id="infBlock"> ∞ </button>
+          </div>
+          
+          <div>
+            <label for="allowOverridesCheck">Allow Overrides? </label>
+            <input type="checkbox" id ="allowOverridesCheck" checked autocomplete="on" value="allowOverrides">
+          </div>
+          <div style="display: flex; justify-content: center; margin-top: 5px">
+            <button id="startSessionButton">Begin Session</button>
+          </div>
+        </fieldset>
         
         <p class="smallHeader" style="display: none">Start a Session</p>  
         <button style="display: none">Enter</button>

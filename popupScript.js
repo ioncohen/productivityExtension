@@ -100,6 +100,10 @@ document.getElementById('backButton').addEventListener('click', () => {
     document.getElementById('popupMain').style.display = 'block';
 });
 
+//infinite session button
+document.getElementById('infBlock').addEventListener('click', () => {
+    document.getElementById('sessionLengthInput').value = 'Infinity'; 
+});
 //start session Button
 document.getElementById('startSessionButton').addEventListener('click', () => {
     const sessionLength = Number(document.getElementById("sessionLengthInput").value)
@@ -186,8 +190,16 @@ function updateCountdown() {
     const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));  // Minutes
     const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);  // Seconds
 
-    // Display the countdown in the format: HH:MM:SS
-    const countdownDisplay = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+    var countdownDisplay = '';
+    if (remainingTime >= 2147483647){
+        countdownDisplay = 'Infinite';
+    } else if (hours >= 100){
+        //display in days
+        countdownDisplay = `${Math.floor(hours/24)} Days`;
+    } else {
+        // Display the countdown in the format: HH:MM:SS
+        countdownDisplay = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+    }
 
     // update timer html.
     document.getElementById('timerDisplay').innerText = countdownDisplay;

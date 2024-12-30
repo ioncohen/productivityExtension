@@ -94,6 +94,7 @@ function checkAndBlock(){
     }
     //check if we are in a work session
     if (storageReturn.targetDate > Date.now()){
+      console.log("confirm in date in future");
       //we are in an active session. check if we are in a blocked site or a good one
         goodSite = true;
         // TODO: maybe the popup should do this when it saves or adds things?
@@ -116,6 +117,7 @@ function checkAndBlock(){
             //not in the block list, so this is a bad site, and not temp unblocked. Block page.
             blockPage();
           } else if (storageReturn.temporaryUnblockDates[siteIndex] > Date.now()){
+            console.log("THIS SHOULD NOT PRINT");
             //we are temp unblocked
             //set the timer to be the lesser of the unblock date or 
             tempUnblockIndex = siteIndex;
@@ -132,11 +134,18 @@ function checkAndBlock(){
           } else {
             //unblock is in the past, so irrelevant. Block the page
             blockPage();
+            console.log('i think this will run:)');
           }
           //todo: move this so it only gets run if the page actually gets blocked?
           //sets a timer to unblock the page at the end of the session, regardless of if we blocked it just now.
           clearTimeout(timeOut);
-          timeOut = setTimeout(unblockPage, storageReturn.targetDate - Date.now());
+          //maximum time out is a bit over 24 days. 
+          var timeoutLength = storageReturn.targetDate - Date.now()
+          if(timeoutLength < 2147483647){
+            timeOut = setTimeout(unblockPage, timeoutLength);
+          }else{
+            console.log("infinite timeout: never unblock");
+          }
         } else {
           //we are in a good site
           //undo a possible previously made display

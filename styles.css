@@ -74,6 +74,7 @@ textarea{
     height: 50px;
 }
 #sessionLengthInput{
+    width:110px;
     background-color: darkgray;
     border: 1px solid var(--darkg);
 }
@@ -233,4 +234,12 @@ button:hover {
     grid-template-columns: repeat(2, 1fr);
     gap: 0px;
     margin-bottom: 5px;
+}
+#infBlock{
+    font-size: 24;
+    border-radius: 50px;
+    padding: 2px;
+    white-space: pre;
+    position: relative;
+    top: 4px;
 }
