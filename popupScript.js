@@ -104,11 +104,24 @@ document.getElementById('backButton').addEventListener('click', () => {
 document.getElementById('infBlock').addEventListener('click', () => {
     document.getElementById('sessionLengthInput').value = 'Infinity'; 
 });
+
+//Listen for enter in sessionlength input
+document.getElementById('sessionLengthInput').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter'){
+        startSession();
+    }
+});
+
 //start session Button
-document.getElementById('startSessionButton').addEventListener('click', () => {
+document.getElementById('startSessionButton').addEventListener('click', startSession);
+
+function startSession(){
     const sessionLength = Number(document.getElementById("sessionLengthInput").value)
     if (sessionLength){
         //start session, save target date!
+        
+        //This line clears the sessionlengthInput. TODO: decide whether this is desired
+        document.getElementById('sessionLengthInput').value = '';
         document.getElementById('popupMain').style.display = 'none';
         document.getElementById('activeSession').style.display = 'flex';
         localStorage.setItem('sessionActive', 'true');
@@ -116,10 +129,11 @@ document.getElementById('startSessionButton').addEventListener('click', () => {
         chrome.storage.local.set({'targetDate': Date.now() + Math.floor(sessionLength*(60000))}); // save target date for content scripts to access
         startClock();
     } else {
-        console.log("ERROR: Not a valid number");
-        //TODO: display little red error message for the user.
+        alert("Not a valid number");
+        //TODO: display little red error message for the user?
     }
-});
+}
+
 document.getElementById('sessionEndReturn').addEventListener('click', () => {
     returnFromSession();
 });

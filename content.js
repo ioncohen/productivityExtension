@@ -434,7 +434,7 @@ function constructOverlay(){
       alert(`Not a valid number`);
       return;
     }
-    alert(`unblocking page for: ${minutesInputField.value} minutes`);
+    //alert(`unblocking page for: ${minutesInputField.value} minutes`);
     //TODO: error check the input value.
     
     //edit temporary unblock list and dates
