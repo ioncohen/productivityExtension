@@ -46,7 +46,7 @@
   
       <div id="popupSettings">
           <h1>Edit Settings</h1>
-        <p class="smallerHeader" style="margin-top: 5px;"><strong>Edit passphrase:</strong><img src="infoCircle.svg" class="infoCircle" title="You will have to type this out to override the blocker. Up to 500 characters."/></p>
+        <p class="smallerHeader"><strong>Edit passphrase:</strong><img src="infoCircle.svg" class="infoCircle" title="You will have to type this out to override the blocker. Up to 500 characters."/></p>
         <textarea type="text" id="passInput" placeholder="Type here" wrap="soft"></textarea>
   
         <p class="smallerHeader"><strong>Edit block list:</strong><img src="infoCircle.svg" class="infoCircle" title="Enter text on each line. Any url containing this text will be blocked"/></p>
@@ -54,7 +54,7 @@
         <div><i class="note">Add a "-" before a line to make an exception</i></div>
   
   
-        <p class="smallerHeader"><strong>Enable distraction-free sites</strong><img src="infoCircle.svg" class="infoCircle" title="Removes some infinite scrolls and content recommendation features from different sites."/></p>
+        <p class="smallerHeader" style="margin-bottom: 0px; margin-top: 0px"><strong>Enable distraction-free sites</strong><img src="infoCircle.svg" class="infoCircle" title="Removes some infinite scrolls and content recommendation features from different sites."/></p>
         <form id="checkboxColumn">
             <div>
               <input type="checkbox" id="streamlineYoutube" name="setting1">
@@ -75,7 +75,7 @@
         </form>
         
         <div id="saveButtonContainer">
-          <button id="saveSettingsButton">Save</button><button id="backButton">Save & Exit</button>
+          <button id="saveSettingsButton">Save</button><button id="backButton">Save & Exit</button><button id="discardChanges">Discard Edits</button>
         </div>
       </div>
   

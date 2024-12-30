@@ -125,6 +125,12 @@ document.getElementById('saveSettingsButton').addEventListener('click', () => {
     saveSettings();
 });
 
+document.getElementById('discardChanges').addEventListener('click', () => {
+    document.getElementById('popupSettings').style.display = 'none';
+    document.getElementById('logoHeader').style.display = 'block';
+    document.getElementById('popupMain').style.display = 'block';
+});
+
 let timerInterval;
 
 //remember if there is an active session in progress
