@@ -211,8 +211,11 @@ function updateCountdown() {
     const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);  // Seconds
 
     var countdownDisplay = '';
-    if (remainingTime >= 2147483647){
+    if (remainingTime >= Number.MAX_SAFE_INTEGER){
         countdownDisplay = 'Infinite';
+    } else if (remainingTime >= 143000*(60000)){
+        document.getElementById('timerDisplay').style.fontSize = 44;
+        countdownDisplay = '>99 Days';
     } else if (hours >= 100){
         //display in days
         countdownDisplay = `${Math.floor(hours/24)} Days`;
