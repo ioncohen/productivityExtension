@@ -87,6 +87,7 @@ dynamicLoadingObserver.observe(document.body, {
 function checkAndBlock(){
   //console.log("CHECKANDBLOCKING");
   chrome.storage.local.get(['targetDate', 'blockList', 'temporaryUnblockDates', 'temporaryUnblockList'], function(storageReturn){
+    console.log(storageReturn.targetDate);
     //if theres no block list, no need to check everything?
     if(!storageReturn.blockList){
       unblockPage();
@@ -94,7 +95,6 @@ function checkAndBlock(){
     }
     //check if we are in a work session
     if (storageReturn.targetDate > Date.now()){
-      console.log("confirm in date in future");
       //we are in an active session. check if we are in a blocked site or a good one
         goodSite = true;
         // TODO: maybe the popup should do this when it saves or adds things?
@@ -117,7 +117,6 @@ function checkAndBlock(){
             //not in the block list, so this is a bad site, and not temp unblocked. Block page.
             blockPage();
           } else if (storageReturn.temporaryUnblockDates[siteIndex] > Date.now()){
-            console.log("THIS SHOULD NOT PRINT");
             //we are temp unblocked
             //set the timer to be the lesser of the unblock date or 
             tempUnblockIndex = siteIndex;
@@ -134,7 +133,6 @@ function checkAndBlock(){
           } else {
             //unblock is in the past, so irrelevant. Block the page
             blockPage();
-            console.log('i think this will run:)');
           }
           //todo: move this so it only gets run if the page actually gets blocked?
           //sets a timer to unblock the page at the end of the session, regardless of if we blocked it just now.
@@ -487,6 +485,7 @@ function styleElement(element){
 }
 
 function unblockPage(){
+  console.log("unblocking Page!!!");
   mutationDebounce = 1000;
   pageBlocked = false;
   reinforceState();
@@ -497,6 +496,7 @@ function unblockPage(){
 }
 
 function blockPage(){
+  console.log("BLOCKING page");
   // Pause all media elements (video, audio)
   mutationDebounce = 250;
   pageBlocked = true;

@@ -117,6 +117,7 @@ document.getElementById('startSessionButton').addEventListener('click', startSes
 
 function startSession(){
     const sessionLength = Number(document.getElementById("sessionLengthInput").value)
+    console.log(sessionLength);
     if (sessionLength){
         //start session, save target date!
         
@@ -126,7 +127,12 @@ function startSession(){
         document.getElementById('activeSession').style.display = 'flex';
         localStorage.setItem('sessionActive', 'true');
         localStorage.setItem('targetDate', Date.now() + Math.floor(sessionLength*(60000)));
-        chrome.storage.local.set({'targetDate': Date.now() + Math.floor(sessionLength*(60000))}); // save target date for content scripts to access
+        if (Date.now() + Math.floor(sessionLength*(60000)) > Number.MAX_SAFE_INTEGER){
+            chrome.storage.local.set({'targetDate': Number.MAX_SAFE_INTEGER}); // save target date for content scripts to access
+        } else {
+            chrome.storage.local.set({'targetDate': Date.now() + Math.floor(sessionLength*(60000))}); // save target date for content scripts to access
+        }
+
         startClock();
     } else {
         alert("Not a valid number");
