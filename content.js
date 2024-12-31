@@ -100,7 +100,8 @@ function checkAndBlock(){
         // TODO: maybe the popup should do this when it saves or adds things?
         const lineList = storageReturn.blockList.split('\n');
         lineList.forEach(blockListLine => {
-          if (location.href.includes(blockListLine)){
+          //check if line is nonempty and included in the href
+          if (blockListLine && location.href.includes(blockListLine)){
             goodSite = false;
           } else if(blockListLine[0] === "-" && location.href.includes(blockListLine.slice(1))){
             //console.log("[][][exception: unblocking!][][]");
