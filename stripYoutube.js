@@ -8,10 +8,10 @@ function stripYoutube(){
     }
 
     //rip out content bar/suggested videos
-    const contentBar = document.getElementById("secondary");
-    if (contentBar){
-        contentBar.style.setProperty('display', 'none', 'important');
-    }
+    const contentBar = document.querySelectorAll('[id=secondary]');
+    console.log(contentBar.length);
+    hideAll(contentBar);
+    
     //rip out comment Section
     const commentSection = document.getElementsByClassName("style-scope ytd-comments");
     hideAll(commentSection);
