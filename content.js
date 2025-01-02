@@ -93,9 +93,8 @@ function reblockPage(){
 }
 
 function checkAndBlock(){
-  console.log("CHECKANDBLOCKING");
+  //console.log("CHECKANDBLOCKING");
   chrome.storage.local.get(['targetDate', 'blockList', 'tempUnblockMap'], function(storageReturn){
-    console.log(storageReturn.targetDate);
     //if theres no block list, no need to check everything?
     if(!storageReturn.blockList){
       unblockPage();
@@ -120,14 +119,13 @@ function checkAndBlock(){
         if (!goodSite){
           //check for temp unblock and set timers correctly
           if (Object.hasOwn(storageReturn.tempUnblockMap, match[1])){
-            console.log("tempUnblocked!!!2111!");
             //temp unblocked, set timers (TODO: how will this interface with override extensions?)
             miniTimerTarget = Math.min(storageReturn.tempUnblockMap[match[1]], storageReturn.targetDate);
             miniTimerDiv.style.display = 'flex';
             editMiniTimer();
             unblockPage();
             clearTimeout(reblockTimer);
-            //will block page redundantly possibly.
+            //avoid redundant page block. doesnt clear object, but returning from finished session will!
             if (Math.abs(miniTimerTarget - storageReturn.targetDate) > 1000){
               reblockTimer = setTimeout(reblockPage, miniTimerTarget - Date.now());
             }
@@ -161,12 +159,10 @@ function reactToStorageChange(changes, area){
   //oh there is probably an infinite loop? or do gets fire this event?
   //alert("detected a change");
   //react to change in password
-  console.log("change in the world");
   if (changes.passPhrase){
     document.getElementById('lockInExtensionPassphraseReminder').innerText = changes.passPhrase.newValue;
   }
   if (changes.targetDate){
-    console.log("change in target date!");
     //either new session started or old session canceled.
     if (changes.targetDate.newValue < Date.now()){
       //old session canceled.
@@ -473,7 +469,6 @@ function styleElement(element){
 }
 
 function unblockPage(){
-  console.log("unblocking Page!!!");
   mutationDebounce = 1000;
   pageBlocked = false;
   reinforceState();
@@ -484,7 +479,6 @@ function unblockPage(){
 }
 
 function blockPage(){
-  console.log("BLOCKING page");
   // Pause all media elements (video, audio)
   mutationDebounce = 250;
   pageBlocked = true;

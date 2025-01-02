@@ -9,7 +9,7 @@ function stripYoutube(){
 
     //rip out content bar/suggested videos
     const contentBar = document.querySelectorAll('[id=secondary]');
-    console.log(contentBar.length);
+    //console.log(contentBar.length);
     hideAll(contentBar);
     
     //rip out comment Section

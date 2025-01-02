@@ -61,7 +61,6 @@ function saveSettings(){
 
 function returnFromSession(){
     //cancel all active unblocks
-    console.log("cancelling ALL UNBLOCKS");
     chrome.storage.local.set({'tempUnblockMap' : Object.create(null)});
 
     //display home screen
@@ -123,7 +122,6 @@ document.getElementById('startSessionButton').addEventListener('click', startSes
 
 function startSession(){
     const sessionLength = Number(document.getElementById("sessionLengthInput").value)
-    console.log(sessionLength);
     if (sessionLength){
         //start session, save target date!
         
