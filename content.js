@@ -1,4 +1,5 @@
-//TODO: redo this so that it doesnt reset all the stuff if its not necessary
+const match = location.href.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
+
 const overlay = document.createElement('div');
 const inputField = document.createElement('input');
 
@@ -20,8 +21,6 @@ chrome.storage.local.get(['streamlineYoutube', 'streamlineReddit', 'streamlineIn
   streamlineTwitter = storageReturn.streamlineTwitter;
 });
 
-//index in tempunblocklist of the site we are currently on.
-var tempUnblockIndex = -1;
 const originalOverflow = document.body.style.overflow;
 var timeOut = -1;
 var reblockTimer = -1;
@@ -83,10 +82,19 @@ dynamicLoadingObserver.observe(document.body, {
   characterData: false     // Track changes to text nodes   // No filter on specific attributes
 });
 
+function reblockPage(){
+  clearTimeout(reblockTimer);
+  chrome.storage.local.get(['tempUnblockMap'], (res) => {
+    //remove the temp unblock from the object/map
+    delete res.tempUnblockMap[match[1]];
+    chrome.storage.local.set({'tempUnblockMap' : res.tempUnblockMap});
+  });
+  blockPage();
+}
 
 function checkAndBlock(){
-  //console.log("CHECKANDBLOCKING");
-  chrome.storage.local.get(['targetDate', 'blockList', 'temporaryUnblockDates', 'temporaryUnblockList'], function(storageReturn){
+  console.log("CHECKANDBLOCKING");
+  chrome.storage.local.get(['targetDate', 'blockList', 'tempUnblockMap'], function(storageReturn){
     console.log(storageReturn.targetDate);
     //if theres no block list, no need to check everything?
     if(!storageReturn.blockList){
@@ -110,40 +118,29 @@ function checkAndBlock(){
           }
         });
         if (!goodSite){
-          //check if temporarily Unblocked
-
-          const match = location.href.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
-          const siteIndex = (storageReturn.temporaryUnblockList) ? storageReturn.temporaryUnblockList.indexOf(match[1]) : -1;
-          if (siteIndex === -1){
-            //not in the block list, so this is a bad site, and not temp unblocked. Block page.
-            blockPage();
-          } else if (storageReturn.temporaryUnblockDates[siteIndex] > Date.now()){
-            //we are temp unblocked
-            //set the timer to be the lesser of the unblock date or 
-            tempUnblockIndex = siteIndex;
-            miniTimerTarget = Math.min(storageReturn.temporaryUnblockDates[siteIndex], storageReturn.targetDate);
+          //check for temp unblock and set timers correctly
+          if (Object.hasOwn(storageReturn.tempUnblockMap, match[1])){
+            console.log("tempUnblocked!!!2111!");
+            //temp unblocked, set timers (TODO: how will this interface with override extensions?)
+            miniTimerTarget = Math.min(storageReturn.tempUnblockMap[match[1]], storageReturn.targetDate);
             miniTimerDiv.style.display = 'flex';
             editMiniTimer();
-            
             unblockPage();
-            if (storageReturn.temporaryUnblockDates[siteIndex] < storageReturn.targetDate){
-              //temp unblock ends before the work session does, so ser a normal timer to reblock
-              clearTimeout(reblockTimer);
-              reblockTimer = setTimeout(checkAndBlock, storageReturn.temporaryUnblockDates[siteIndex] - Date.now());
+            clearTimeout(reblockTimer);
+            //will block page redundantly possibly.
+            if (Math.abs(miniTimerTarget - storageReturn.targetDate) > 1000){
+              reblockTimer = setTimeout(reblockPage, miniTimerTarget - Date.now());
             }
           } else {
-            //unblock is in the past, so irrelevant. Block the page
             blockPage();
-          }
-          //todo: move this so it only gets run if the page actually gets blocked?
-          //sets a timer to unblock the page at the end of the session, regardless of if we blocked it just now.
-          clearTimeout(timeOut);
-          //maximum time out is a bit over 24 days. 
-          var timeoutLength = storageReturn.targetDate - Date.now()
-          if(timeoutLength < 2147483647){
-            timeOut = setTimeout(unblockPage, timeoutLength);
-          }else{
-            console.log("infinite timeout: never unblock");
+
+            //set a timer to unblock the page at the end of the session, regardless of if we blocked it just now.
+            clearTimeout(timeOut);
+            var timeoutLength = storageReturn.targetDate - Date.now()
+            //maximum time out is a bit over 24 days. 
+            if(timeoutLength < 2147483647){
+             timeOut = setTimeout(unblockPage, timeoutLength);
+            }
           }
         } else {
           //we are in a good site
@@ -164,22 +161,33 @@ function reactToStorageChange(changes, area){
   //oh there is probably an infinite loop? or do gets fire this event?
   //alert("detected a change");
   //react to change in password
+  console.log("change in the world");
   if (changes.passPhrase){
     document.getElementById('lockInExtensionPassphraseReminder').innerText = changes.passPhrase.newValue;
   }
   if (changes.targetDate){
+    console.log("change in target date!");
     //either new session started or old session canceled.
     if (changes.targetDate.newValue < Date.now()){
       //old session canceled.
-      //  forget old reblocks
+      //  forget old reblocks: prevents scheduled blocking
+      //  reblockPage doesn't get called, but thats ok because session cancel clears object/map
       clearTimeout(reblockTimer);
+
       //hopefully stop timer?
       miniTimerTarget = changes.targetDate.newValue;
     }
   }
   
-  if (changes.temporaryUnblockDates){
-    miniTimerTarget = changes.temporaryUnblockDates.newValue[tempUnblockIndex];
+  if (changes.tempUnblockMap){
+    if (Object.hasOwn(changes.tempUnblockMap.newValue, match[1])){
+      miniTimerTarget = changes.tempUnblockMap.newValue[match[1]];
+    } else {
+      //must have been deleted? or never existed
+      miniTimerTarget = 0;
+      //cancels reblockPage, but thats ok because theres no key to remove anyway
+      clearTimeout(reblockTimer);
+    }
   }
 
   var reStrip = false;
@@ -201,7 +209,7 @@ function reactToStorageChange(changes, area){
   }
   if (reStrip) stripAll();
 
-  if(changes.blockList || changes.targetDate || changes.temporaryUnblockDates){
+  if(changes.blockList || changes.targetDate || changes.tempUnblockMap){
     checkAndBlock();
   }
 }
@@ -283,10 +291,14 @@ function cancelTempUnblock(){
   miniTimerTarget = Date.now();
   miniTimerDiv.style.display = 'none';
 
+  //remove block timer, because check and block should block the page anyway
+  // skips deletion from object/map, but thats ok because we do it here anyway
+  clearTimeout(reblockTimer);
   //now we have to update the target dates of the temp unblock list
-  chrome.storage.local.get(['temporaryUnblockDates'], function(storageReturn){
-    storageReturn.temporaryUnblockDates[tempUnblockIndex] = Date.now()-5;
-    chrome.storage.local.set({'temporaryUnblockDates' : storageReturn.temporaryUnblockDates});
+  //this should trigger checkandblock?
+  chrome.storage.local.get(['tempUnblockMap'], function(storageReturn){
+    delete storageReturn.tempUnblockMap[match[1]];
+    chrome.storage.local.set({'tempUnblockMap' : storageReturn.tempUnblockMap});
   });
 }
 
@@ -437,36 +449,11 @@ function constructOverlay(){
     //TODO: error check the input value.
     
     //edit temporary unblock list and dates
-    chrome.storage.local.get(['temporaryUnblockList', 'temporaryUnblockDates'], function(storageValue){
-      if (storageValue.temporaryUnblockList){
-        const match = location.href.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
-        const siteIndex = storageValue.temporaryUnblockList.indexOf(match[1]);
-        if (siteIndex !== -1){
-          storageValue.temporaryUnblockDates[siteIndex] = milliseconds + Date.now()
-          ;
-        } else {
-          storageValue.temporaryUnblockList.push(match[1]);
-          storageValue.temporaryUnblockDates.push(milliseconds + Date.now());
-        }
-        
-        //hopefully this should cause check and block to run 
-        chrome.storage.local.set({
-          'temporaryUnblockList'  : storageValue.temporaryUnblockList,
-          'temporaryUnblockDates' : storageValue.temporaryUnblockDates
-        });
-      } else {
-        //first ever unblock, set new arrays!
-        const match = location.href.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
-        chrome.storage.local.set({
-          'temporaryUnblockList'  : [`${match[1]}`],
-          'temporaryUnblockDates' : [milliseconds + Date.now()]
-        });
-      }
+    chrome.storage.local.get(['tempUnblockMap'], function(storageValue){
+      storageValue.tempUnblockMap[match[1]] = milliseconds + Date.now();
+        //hopefully this should cause check and block to run, turn on timer and stuff 
+        chrome.storage.local.set({'tempUnblockMap'  : storageValue.tempUnblockMap});
     });
-
-    //TODO: add a timer element to the corner of the page?
-    
-
     minutesInputField.value = '';
     exitAskForMinutes();
     unblockPage();

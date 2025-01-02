@@ -60,11 +60,17 @@ function saveSettings(){
 }
 
 function returnFromSession(){
-    clearTimeout()
+    //cancel all active unblocks
+    console.log("cancelling ALL UNBLOCKS");
+    chrome.storage.local.set({'tempUnblockMap' : Object.create(null)});
+
+    //display home screen
     document.getElementById('typePassphrase').style.display = 'none';
     document.getElementById('activeSession').style.display = 'none';
     document.getElementById('popupMain').style.display = 'block';
+
     localStorage.setItem('targetDate', Date.now()-50000);
+
     //should trigger check and block.
     chrome.storage.local.set({'targetDate' : Date.now()-50000});
     localStorage.setItem('sessionActive', 'false');
@@ -313,6 +319,7 @@ document.getElementById('cancelOverride').addEventListener('click', () => {
     document.getElementById('targetPassphrase').innerText = targetPassphrase;
 });
 
+//wait for password match and cancel override
 document.getElementById('typePassBox').addEventListener('input', (event) => {
     if (event.target.value === targetPassphrase){
         event.target.value = '';
