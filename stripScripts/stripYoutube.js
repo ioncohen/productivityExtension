@@ -7,6 +7,10 @@ function stripYoutube(){
         location.href = location.href.replace("/shorts/", "/watch/");
     }
 
+    if (location.href.includes("youtube.com/@")){
+        document.querySelectorAll('audio, video').forEach(el => el.pause());
+    }
+
     //rip out content bar/suggested videos
     const contentBar = document.querySelectorAll('[id=secondary]');
     //console.log(contentBar.length);
