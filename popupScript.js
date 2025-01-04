@@ -128,7 +128,9 @@ document.getElementById('startSessionButton').addEventListener('click', startSes
 function startSession(){
     const sessionLength = Number(document.getElementById("sessionLengthInput").value)
     if (sessionLength){
-        //start session, save target date!
+        //start session, set target date and other vars
+
+        chrome.storage.local.set({'allowOverrides' : document.getElementById('allowOverridesCheck').checked});
         
         //This line clears the sessionlengthInput. TODO: decide whether this is desired
         document.getElementById('sessionLengthInput').value = '';

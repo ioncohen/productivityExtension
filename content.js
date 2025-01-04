@@ -2,6 +2,8 @@ const match = location.href.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
 
 const overlay = document.createElement('div');
 const inputField = document.createElement('input');
+const heading = document.createElement('h2');
+
 
 var storedHref = location.href;
 
@@ -13,12 +15,14 @@ var streamlineYoutube = false;
 var streamlineReddit = false;
 var streamlineInstagram = false;
 var streamlineTwitter = false;
+var allowOverrides = true;
 
-chrome.storage.local.get(['streamlineYoutube', 'streamlineReddit', 'streamlineInstagram', 'streamlineTwitter'], (storageReturn) => {
+chrome.storage.local.get(['streamlineYoutube', 'streamlineReddit', 'streamlineInstagram', 'streamlineTwitter', 'allowOverrides'], (storageReturn) => {
   streamlineYoutube = storageReturn.streamlineYoutube;
   streamlineReddit = storageReturn.streamlineReddit;
   streamlineInstagram = storageReturn.streamlineInstagram;
   streamlineTwitter = storageReturn.streamlineTwitter;
+  allowOverrides = storageReturn.allowOverrides;
 });
 
 const originalOverflow = document.body.style.overflow;
@@ -161,6 +165,18 @@ function reactToStorageChange(changes, area){
   //react to change in password
   if (changes.passPhrase){
     document.getElementById('lockInExtensionPassphraseReminder').innerText = changes.passPhrase.newValue;
+  }
+  if (changes.allowOverrides){
+    allowOverrides = changes.allowOverrides.newValue;
+    if (allowOverrides){
+      heading.innerText = 'Enter passphrase to access site';
+      document.getElementById('lockInExtensionPassphraseBox').children[1].style.display = 'block';
+      document.getElementById('lockInExtensionPassphraseBox').children[2].style.display = 'block';
+    } else {
+      heading.innerText = 'Site blocked - Overrides disabled';
+      document.getElementById('lockInExtensionPassphraseBox').children[1].style.display = 'none';
+      document.getElementById('lockInExtensionPassphraseBox').children[2].style.display = 'none';
+    }
   }
   if (changes.targetDate){
     //either new session started or old session canceled or old session extended.
@@ -356,7 +372,6 @@ function constructOverlay(){
   passphraseBox.style.borderRadius = '8px';
   passphraseBox.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
   
-  const heading = document.createElement('h2');
   heading.textContent = 'Enter passphrase to access site';
   
   styleElement(heading);
@@ -399,6 +414,12 @@ function constructOverlay(){
   passphraseBox.appendChild(cancelUnblockButton);
 
   overlay.appendChild(passphraseBox);
+
+  if (!allowOverrides){
+    heading.textContent = 'Site blocked - Overrides disabled';
+    document.getElementById('lockInExtensionPassphraseBox').children[1].style.display = 'block';
+    document.getElementById('lockInExtensionPassphraseBox').children[2].style.display = 'block';
+  }
 
   // Add the overlay to the page
   document.body.appendChild(overlay);

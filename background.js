@@ -11,5 +11,6 @@ function setDefaults(details){
         chrome.storage.local.set({'targetDate' : Date.now()-50000});
         chrome.storage.local.set({'blockList' : "example.com\nexample.org"});
         chrome.storage.local.set({'tempUnblockMap' : Object.create(null)});
+        chrome.storage.local.set({'allowOverrides' : true});
     }
 }
