@@ -163,7 +163,7 @@ function reactToStorageChange(changes, area){
     document.getElementById('lockInExtensionPassphraseReminder').innerText = changes.passPhrase.newValue;
   }
   if (changes.targetDate){
-    //either new session started or old session canceled.
+    //either new session started or old session canceled or old session extended.
     if (changes.targetDate.newValue < Date.now()){
       //old session canceled.
       //  forget old reblocks: prevents scheduled blocking
@@ -172,6 +172,9 @@ function reactToStorageChange(changes, area){
 
       //hopefully stop timer?
       miniTimerTarget = changes.targetDate.newValue;
+    } else {
+      //new sesh started or old sesh extended. Let's reset all timers just in case? or what is actually the issue?
+      //console.log("extension");
     }
   }
   

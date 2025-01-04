@@ -60,6 +60,11 @@ function saveSettings(){
 }
 
 function returnFromSession(){
+    //ensure extend button gets reset
+    document.getElementById('extendButtonPrompt').style.display = 'none';
+    document.getElementById('extendButton').style.display = 'block';
+    document.getElementById('extendNumInput').value = '';
+
     //cancel all active unblocks
     chrome.storage.local.set({'tempUnblockMap' : Object.create(null)});
 
@@ -127,6 +132,10 @@ function startSession(){
         
         //This line clears the sessionlengthInput. TODO: decide whether this is desired
         document.getElementById('sessionLengthInput').value = '';
+
+        document.getElementById('hiddenLine').style.opacity = 1;
+        document.getElementById('hiddenLine').style.display = 'block';
+
         document.getElementById('popupMain').style.display = 'none';
         document.getElementById('activeSession').style.display = 'flex';
         localStorage.setItem('sessionActive', 'true');
@@ -159,14 +168,36 @@ document.getElementById('discardChanges').addEventListener('click', () => {
     document.getElementById('popupMain').style.display = 'block';
 });
 
+//listen for extendbutton click
+document.getElementById('extendButton').addEventListener('click', () => {
+    document.getElementById('extendButton').style.display = 'none';
+    document.getElementById('extendButtonPrompt').style.display = 'block';
+});
+
+//listen for extend length enter
+//disallow negatives
+document.getElementById('extendEnter').addEventListener('click', () =>{
+    if (document.getElementById('extendNumInput').value >= 0 && Number(localStorage.getItem('targetDate')) > Date.now() + 1000){
+        //compute new target date from old one
+        const newTargetDate = Number(localStorage.getItem('targetDate')) + (document.getElementById('extendNumInput').value * 60000);
+        localStorage.setItem('targetDate', newTargetDate);
+        //this should trigger check and block, but will that correctly change minitimer and so on? probably not. also will not change timeouts
+        chrome.storage.local.set({'targetDate' : newTargetDate});
+    }
+    document.getElementById('extendButtonPrompt').style.display = 'none';
+    document.getElementById('extendButton').style.display = 'block';
+    document.getElementById('extendNumInput').value = '';
+});
+
+
 let timerInterval;
 
 //remember if there is an active session in progress
 if(localStorage.getItem('sessionActive') === 'true'){ 
     document.getElementById('popupMain').style.display = 'none';
     document.getElementById('activeSession').style.display = 'flex';
-
-    if(localStorage.getItem('targetDate') < Date.now()){
+    
+    if(Number(localStorage.getItem('targetDate')) < Date.now()){
         //display hiddenMessage ABRUPTLY if past deadline.
         document.getElementById('hiddenLine').style.display = 'none';
         document.getElementById('hiddenMessage').style.opacity = '1';
@@ -194,7 +225,7 @@ function updateCountdown() {
     const currentTime = Date.now();
     
     // Calculate the difference in milliseconds between now and the target date
-    const remainingTime = localStorage.getItem('targetDate') - currentTime;
+    const remainingTime = Number(localStorage.getItem('targetDate')) - currentTime;
 
     // If the target date has passed, stop the countdown
     if (remainingTime <= 0) {
