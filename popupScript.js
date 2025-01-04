@@ -337,20 +337,18 @@ document.getElementById('overrideButton').addEventListener('click', () => {
     document.getElementById('targetPassphrase').innerText = localStorage.getItem('passPhrase');
 });
 
-let targetPassphrase = localStorage.getItem('passPhrase');
 document.getElementById('cancelOverride').addEventListener('click', () => {
     document.getElementById('typePassphrase').style.display = 'none';
     document.getElementById('typePassBox').value = '';
     document.getElementById('activeSession').style.display = 'flex';
-    targetPassphrase = localStorage.getItem('passPhrase');
 
     //TODO:remove this? and investigate weird targetPassphrase shenanigans
-    document.getElementById('targetPassphrase').innerText = targetPassphrase;
+    document.getElementById('targetPassphrase').innerText = localStorage.getItem('passPhrase');
 });
 
 //wait for password match and cancel override
 document.getElementById('typePassBox').addEventListener('input', (event) => {
-    if (event.target.value === targetPassphrase){
+    if (event.target.value === localStorage.getItem('passPhrase')){
         event.target.value = '';
         returnFromSession();
     }
