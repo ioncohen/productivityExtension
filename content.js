@@ -96,6 +96,19 @@ function reblockPage(){
   blockPage();
 }
 
+//returns a bool representing if the href matches a single line in the blocklist. Uses fake glob or regex depending on settings
+function matchBlockList(href, blockListLine){
+  //replace special characters to convert to regex
+  blockListLine = blockListLine.replace('\\', '\\\\');
+  blockListLine = blockListLine.replace('.', '\\.');
+  blockListLine = blockListLine.replace('/', '\\/');
+  blockListLine = blockListLine.replace('*', '.*');
+  blockListLine = blockListLine.replace('+', '.+');
+
+  const regularExpression = new RegExp(blockListLine);
+  return href.match(blockListLine) !== null;
+}
+
 function checkAndBlock(){
   //console.log("CHECKANDBLOCKING");
   chrome.storage.local.get(['targetDate', 'blockList', 'tempUnblockMap'], function(storageReturn){
@@ -112,9 +125,9 @@ function checkAndBlock(){
         const lineList = storageReturn.blockList.split('\n');
         lineList.forEach(blockListLine => {
           //check if line is nonempty and included in the href
-          if (blockListLine && location.href.includes(blockListLine)){
+          if (blockListLine && matchBlockList(location.href, blockListLine)){
             goodSite = false;
-          } else if(blockListLine[0] === "-" && location.href.includes(blockListLine.slice(1))){
+          } else if(blockListLine[0] === "-" && matchBlockList(location.href, blockListLine.slice(1))){
             //console.log("[][][exception: unblocking!][][]");
             //console.log(blockListLine);
             goodSite = true;
