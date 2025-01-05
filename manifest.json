@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Lock In",
     "description": "Helps you focus by blocking distracting sites during work sessions",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "action": {
       "default_popup": "popMenu.html",
       "default_icon": "images/PEIcon.png"
