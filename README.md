@@ -13,6 +13,7 @@ This is an extension for Google Chrome (and soon Firefox as well) which allows u
   * This allows for flexibility, in case a user needs to access a blocked site.
   * Reduces risk of user uninstalling or disabling the extension out of frustration
 * User can enable "distraction-free" versions of various sites, removing things like infinite scrolls of content and algorithmic recommendations.
+* Block list allows fine grained control over blocking with exceptions (-) and wildcards (*).
 
 ## Future Plans
 * The extension is currently published privately to the Chrome web store while our team tests and finalizes the extension. It will be released in January, 2025
