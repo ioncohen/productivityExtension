@@ -32,6 +32,24 @@ function initialize(){
     }
 }
 
+function goToSettings(){
+    //store state
+    localStorage.setItem('sessionActive', 'settings');
+
+    //hide and display pages
+    document.getElementById('popupMain').style.display = 'none';
+    document.getElementById('logoHeader').style.display = 'none';
+    document.getElementById('popupSettings').style.display = 'block';
+    //fill the settings with stored values (maybe do this at the start instead?)
+    document.getElementById('passInput').value = localStorage.getItem('passPhrase');
+    document.getElementById('blockList').value = localStorage.getItem('blockList');
+
+    document.getElementById('streamlineYoutube').checked = localStorage.getItem('streamlineYoutube') === 'true';
+    document.getElementById('streamlineReddit').checked = localStorage.getItem('streamlineReddit') === 'true';
+    document.getElementById('streamlineInstagram').checked = localStorage.getItem('streamlineInstagram') === 'true';
+    document.getElementById('streamlineTwitter').checked = localStorage.getItem('streamlineTwitter') === 'true';
+}
+
 initialize();
 
 function saveSettings(){
@@ -88,22 +106,10 @@ function returnFromSession(){
 }
 
 //Set up event listeners for page navigation buttons
-document.getElementById('goToSettingsButton').addEventListener('click', () => {
-    document.getElementById('popupMain').style.display = 'none';
-    document.getElementById('logoHeader').style.display = 'none';
-    document.getElementById('popupSettings').style.display = 'block';
-    //fill the settings with stored values (maybe do this at the start instead?)
-    document.getElementById('passInput').value = localStorage.getItem('passPhrase');
-    document.getElementById('blockList').value = localStorage.getItem('blockList');
-
-    document.getElementById('streamlineYoutube').checked = localStorage.getItem('streamlineYoutube') === 'true';
-    document.getElementById('streamlineReddit').checked = localStorage.getItem('streamlineReddit') === 'true';
-    document.getElementById('streamlineInstagram').checked = localStorage.getItem('streamlineInstagram') === 'true';
-    document.getElementById('streamlineTwitter').checked = localStorage.getItem('streamlineTwitter') === 'true';
-
-});
+document.getElementById('goToSettingsButton').addEventListener('click', goToSettings);
 
 document.getElementById('backButton').addEventListener('click', () => {
+    localStorage.setItem('sessionActive', 'false');
     saveSettings();
     document.getElementById('popupSettings').style.display = 'none';
     document.getElementById('logoHeader').style.display = 'block';
@@ -165,10 +171,26 @@ document.getElementById('saveSettingsButton').addEventListener('click', () => {
 });
 
 document.getElementById('discardChanges').addEventListener('click', () => {
+    localStorage.setItem('sessionActive', 'false');
+    revertSettings();
     document.getElementById('popupSettings').style.display = 'none';
     document.getElementById('logoHeader').style.display = 'block';
     document.getElementById('popupMain').style.display = 'block';
 });
+
+function revertSettings(){
+    const getList = ['passphrase', 'blockList', 'streamlineYoutube', 'streamlineReddit', 'streamlineInstagram', 'streamlineTwitter'];
+    chrome.storage.local.get(getList, (storage) => {
+        //revert passphrase and blocklist
+        localStorage.setItem('passphrase', storage.passPhrase);
+        localStorage.setItem('blockList', storage.blockList);
+        //revert streamlines
+        localStorage.setItem('streamlineYoutube', storage.streamlineYoutube);
+        localStorage.setItem('streamlineReddit', storage.streamlineReddit);
+        localStorage.setItem('streamlineTwitter', storage.streamlineTwitter);
+        localStorage.setItem('streamlineInstagram', storage.streamlineInstagram);
+    });
+}
 
 //listen for extendbutton click
 document.getElementById('extendButton').addEventListener('click', () => {
@@ -300,9 +322,40 @@ function startClock() {
     }, msToDelay);
 }
 
+//event listener to autosave passphrase
+document.getElementById('passInput').addEventListener('keyup', (event) => {
+    localStorage.setItem('passPhrase', event.target.value);
+})
+
+//event listener to autosave blocklist
+document.getElementById('blockList').addEventListener('keyup', (event) => {
+    localStorage.setItem('blockList', event.target.value);
+})
+
+//event listener to autosave checkBoxes
+function setupCheckboxAutosave(elementID, storageItemName = elementID){
+    document.getElementById(elementID).addEventListener('click', (event) => {
+        console.log("event listener triggered!");
+        console.log(event.target.checked);
+        localStorage.setItem(storageItemName, event.target.checked);
+    });
+}
+
+setupCheckboxAutosave('streamlineYoutube');
+setupCheckboxAutosave('streamlineReddit');
+setupCheckboxAutosave('streamlineInstagram');
+setupCheckboxAutosave('streamlineTwitter');
+
+document.getElementById('passInput').addEventListener('keyup', (event) => {
+    localStorage.setItem('passPhrase', event.target.value);
+})
+
 // Start the countdown on popup restart if the session is still active
-if (localStorage.getItem('activeSession') === 'true')
-    startClock();
+if (localStorage.getItem('sessionActive') === 'settings'){
+    goToSettings();
+}
+
+
 
 //Listen to all "blockThisSite" buttons, and add current site to blockList.
 blockThisSiteButtons = document.getElementsByClassName('blockThisSite');
