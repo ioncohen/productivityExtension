@@ -37,7 +37,7 @@
           <button id="goToSettingsButton" class="bigButton">Edit Settings, Block List</button>
         </div>
         <div class="lineSeparatedDiv">
-          <button class="blockThisSite bigButton">Block current site</button>
+          <button id ="blockThisSite" class="blockThisSite bigButton">Block current site</button>
         </div>
       </div>
   
@@ -72,7 +72,7 @@
         </form>
         
         <div id="saveButtonContainer">
-          <button id="saveSettingsButton">Save</button><button id="backButton">Save & Exit</button><button id="discardChanges">Discard Edits</button>
+          <button id="saveSettingsButton" style = "display: none">Save</button><button id="backButton">Save & Exit</button><button id="discardChanges">Discard Edits</button>
         </div>
       </div>
   
@@ -84,14 +84,18 @@
         <span id="hiddenMessage">
           <span style="text-align: center">Session Complete: <button id="sessionEndReturn">Return</button><button class="exitButton">Exit</button></span>
           </span>
-        <!--put dots like baseball to represent next big break-->
+        <!--put dots like baseball to represent next big pomodoro break-->
         <button id="overrideButton" class="mediumButton">Override Lock-In session</button>
         <!--maybe clicking the clock should pause it-->
+        
         <button id="extendButton" class="mediumButton">Extend Lock-In session</button>
         <div id = "extendButtonPrompt" class="fakeButton mediumButton">
           Extend for <input id="extendNumInput" type="number"> minutes <button id="extendEnter">Enter</button>
         </div>  
-        <button id="blockThisSite" class="blockThisSite mediumButton" style="margin-bottom: 0px;" >Add current site to block list</button>
+        <button id="blockThisSiteActive" class="blockThisSite mediumButton" style="margin-bottom: 0px;" >Add site to block list</button>
+        <div id = "blockThisSitePrompt" class = "fakeButton mediumButton" style="margin-bottom: 0px">
+          <input id="newBlockInput" type="text"> <button id="newBlockEnter">Block</button><button id="cancelNewBlock" class="XButton">✖</button>
+        </div>
       </div>
   
       <div id="typePassphrase">

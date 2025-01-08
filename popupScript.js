@@ -179,10 +179,10 @@ document.getElementById('discardChanges').addEventListener('click', () => {
 });
 
 function revertSettings(){
-    const getList = ['passphrase', 'blockList', 'streamlineYoutube', 'streamlineReddit', 'streamlineInstagram', 'streamlineTwitter'];
+    const getList = ['passPhrase', 'blockList', 'streamlineYoutube', 'streamlineReddit', 'streamlineInstagram', 'streamlineTwitter'];
     chrome.storage.local.get(getList, (storage) => {
         //revert passphrase and blocklist
-        localStorage.setItem('passphrase', storage.passPhrase);
+        localStorage.setItem('passPhrase', storage.passPhrase);
         localStorage.setItem('blockList', storage.blockList);
         //revert streamlines
         localStorage.setItem('streamlineYoutube', storage.streamlineYoutube);
@@ -191,6 +191,38 @@ function revertSettings(){
         localStorage.setItem('streamlineInstagram', storage.streamlineInstagram);
     });
 }
+
+//listen for newBlockButton click
+document.getElementById('blockThisSiteActive').addEventListener('click', () => {
+    //fill input with current site:
+    blockThisSiteListener(null, document.getElementById('newBlockInput'));
+    //swap button for fake button
+    document.getElementById('blockThisSiteActive').style.display = 'none';
+    document.getElementById('blockThisSitePrompt').style.display = 'block';
+
+});
+
+document.getElementById('newBlockEnter').addEventListener('click', newBlockEnter);
+document.getElementById('newBlockInput').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter'){
+        newBlockEnter();
+    }
+});
+function newBlockEnter(){
+    //empty out the thing and append
+    prependToBlockList(document.getElementById('newBlockInput').value);
+    cancelBlockThisSite();
+}
+
+function cancelBlockThisSite(){
+    //empty input
+    document.getElementById('newBlockInput').value = '';
+    //swap buttons back
+    document.getElementById('blockThisSiteActive').style.display = 'block';
+    document.getElementById('blockThisSitePrompt').style.display = 'none';
+}
+
+document.getElementById('cancelNewBlock').addEventListener('click', cancelBlockThisSite);
 
 //listen for extendbutton click
 document.getElementById('extendButton').addEventListener('click', () => {
@@ -357,28 +389,38 @@ if (localStorage.getItem('sessionActive') === 'settings'){
 
 
 
-//Listen to all "blockThisSite" buttons, and add current site to blockList.
-blockThisSiteButtons = document.getElementsByClassName('blockThisSite');
-for(button of blockThisSiteButtons){
-    button.addEventListener('click', blockThisSiteListener);
+//Listen to "blockThisSite" button, and add current site to blockList.
+document.getElementById('blockThisSite').addEventListener('click', blockThisSiteListener);
+
+function prependToBlockList(newLine){
+    currentBlockList = localStorage.getItem('blockList');
+    // change to \n before, OR begins with?.
+    if (currentBlockList.includes("\n" + newLine + "\n") 
+        || currentBlockList.startsWith(newLine + "\n") 
+        || currentBlockList.endsWith("\n" + newLine) 
+        || currentBlockList === newLine){
+        alert("already blocked");
+    } else {
+        const newBlockList = newLine + '\n' + currentBlockList;
+        localStorage.setItem('blockList', newBlockList);
+        chrome.storage.local.set({'blockList': newBlockList});
+    }
 }
 
-function blockThisSiteListener(){
+function blockThisSiteListener(event, inputToFill = null){
     (async () => {
         // get last focused window from chrome
         const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
         const match = tab.url.match(/^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/);
         
+        if (inputToFill){
+            inputToFill.value = match[1];
+            return;
+        }
+        // if not returned, we are in simple home button
         // check if match works (on an actual site)
         if (match){
-            currentBlockList = localStorage.getItem('blockList');
-            if (currentBlockList.includes(match[1] + "\n") || currentBlockList.endsWith(match[1])){
-                alert("already blocked");
-            } else {
-                const newBlockList = match[1] + '\n' + localStorage.getItem('blockList');
-                localStorage.setItem('blockList', newBlockList);
-                chrome.storage.local.set({'blockList': newBlockList});
-            }
+            prependToBlockList(match[1]);
         } else {
             alert("Can't block this site, sorry");
         }

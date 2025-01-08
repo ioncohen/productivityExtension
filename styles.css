@@ -78,6 +78,11 @@ textarea{
     background-color: darkgray;
     border: 1px solid var(--darkg);
 }
+#newBlockInput{
+    width: 140px;
+    background-color: darkgray;
+    border: 1px solid var(--darkg);
+}
 #blockList {
     white-space: nowrap;
     overflow: auto;
@@ -90,7 +95,8 @@ button{
     background-color: darkgray;
 }
 .fakeButton{
-    border : 1px solid black;
+    display: none;
+    border: 1px solid black;
     border-radius: 10px;
     background-color: darkgray;
 }
@@ -258,6 +264,6 @@ button:hover {
     position: relative;
     top: 4px;
 }
-#extendButtonPrompt{
-    display : none;
+.XButton{
+    font-size: 12;
 }
