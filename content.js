@@ -104,6 +104,7 @@ function matchBlockList(href, blockListLine){
   blockListLine = blockListLine.replace('/', '\\/');
   blockListLine = blockListLine.replace('*', '.*');
   blockListLine = blockListLine.replace('+', '.+');
+  blockListLine = blockListLine.replace('?', '\\?');
 
   const regularExpression = new RegExp(blockListLine);
   return href.match(blockListLine) !== null;
