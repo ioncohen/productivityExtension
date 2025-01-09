@@ -38,8 +38,8 @@ fieldset{
     margin: 0 auto;
     border-top: 2px solid var(--darkg);
     width: 98%;
-    padding-top: 16px;
-    padding-bottom: 16px;
+    padding-top: 14px;
+    padding-bottom: 14px;
 }
 .lineDiv{
     display: flex;
@@ -223,9 +223,10 @@ textarea::placeholder {
     background-color: darkgray;
     border-radius: 5px;
     width: max-content;
-    max-width: 80%;
+    max-width: 90%;
     padding: 10px;
     margin: 10px;
+    margin-left: 0px;
     font-size: 16px;
     word-wrap: break-word;
 }
@@ -234,6 +235,8 @@ legend{
 }
 #typePassBox{
     font-size: 16px;
+    margin-top: 5px;
+    margin-bottom:3px;
 }
 button:hover {
     background-color: rgb(140,140,140);
