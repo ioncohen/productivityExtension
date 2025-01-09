@@ -1,3 +1,6 @@
+// code to strip recommendations and distractions out of youtube. 
+// Only strips things that can't be effectively blocked using the blocklist (but what about outside of sessions?)
+
 function stripYoutube(){
     //redirect site if its a short.
     if (!location.href.includes("youtube.com")){
@@ -7,9 +10,15 @@ function stripYoutube(){
         location.href = location.href.replace("/shorts/", "/watch/");
     }
 
+    
+    
+    //code to block channel page. Maybe remove, because people can choose to block channels themselves?
     if (location.href.includes("youtube.com/@")){
         document.querySelectorAll('audio, video').forEach(el => el.pause());
+        const channelContents = document.querySelector('ytd-two-column-browse-results-renderer[page-subtype=channels]');
+        hide(channelContents);
     }
+    
 
     //rip out content bar/suggested videos
     const contentBar = document.querySelectorAll('[id=secondary]');
@@ -35,13 +44,17 @@ function stripYoutube(){
     hideAll(ceElements);
 
     //rip out home screen
-    const homeScreen = document.getElementsByClassName("style-scope ytd-two-column-browse-results-renderer");
-    for(var i = 0; i < homeScreen.length; i++){
-        if (homeScreen[i].id === "primary" && homeScreen[i].tagName === "DIV" ){
-            homeScreen[i].style.setProperty('display', 'none', 'important');
-        }
+    if (location.href.endsWith('youtube.com/')){
+        //this line only selects the currently visible primary content div
+        const homeScreen = document.querySelector('ytd-browse[role=main]');
+        console.log("removing the main thing!");
+        hide(homeScreen);
+        //for(var i = 0; i < homeScreen.length; i++){
+        //    if (homeScreen[i].id === "primary" && homeScreen[i].tagName === "DIV" ){
+         //       homeScreen[i].style.setProperty('display', 'none', 'important');
+         //   }
+        //}
     }
-    
 }
 
 function hideAll(htmlCollection){
